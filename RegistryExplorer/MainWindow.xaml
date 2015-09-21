@@ -1,0 +1,145 @@
+﻿<Window x:Class="RegistryExplorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
+        xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
+        xmlns:b="clr-namespace:RegistryExplorer.Behaviors"
+        xmlns:conv="clr-namespace:RegistryExplorer.Converters"
+        xmlns:view="clr-namespace:RegistryExplorer.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        Title="Registry Explorer" MinHeight="350" MinWidth="525">
+    <Window.Resources>
+        <b:ValueCellTemplateSelector x:Key="ValueCellTemplateSelector">
+            <b:ValueCellTemplateSelector.SingleValueDataTemplate>
+                <DataTemplate>
+                    <TextBox Text="{Binding Value}" />
+                </DataTemplate>
+            </b:ValueCellTemplateSelector.SingleValueDataTemplate>
+        </b:ValueCellTemplateSelector>
+        <conv:DataTypeToImageConverter x:Key="dataType2image" />
+        <HierarchicalDataTemplate DataType="{x:Type vm:RegistryKeyItem}" ItemsSource="{Binding SubKeys}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/images/folder_closed.png" Width="16" Height="16" x:Name="_image" />
+                <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,0,0" />
+            </StackPanel>
+            <HierarchicalDataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                    <Setter Property="Source" TargetName="_image" Value="/images/folder.png" />
+                </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+        </HierarchicalDataTemplate>
+        <DataTemplate DataType="{x:Type vm:RegistryKeyItemSpecial}" >
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding Icon}" Width="16" Height="16" x:Name="_image" />
+                <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,0,0" />
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <view:MenuBarView />
+        <ToolBar Grid.Row="1" HorizontalAlignment="Stretch" Background="WhiteSmoke" >
+            <!--<StackPanel.Resources>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                    <Setter Property="Margin" Value="1" />
+                    <Setter Property="Padding" Value="2" />
+                </Style>
+            </StackPanel.Resources>-->
+            <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/images/book_blue.png" Width="16" Height="16" />
+                    <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Read Only" />
+                </StackPanel>
+            </ToggleButton>
+            <Separator />
+            <Button Command="{Binding ImportCommand}" ToolTip="Import">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/images/import.png" Width="16" Height="16" />
+                    <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Import" />
+                </StackPanel>
+            </Button>
+            <Button Command="{Binding LoadHiveCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/images/import2.png" Width="16" Height="16" />
+                    <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Load Hive" />
+                </StackPanel>
+            </Button>
+            <Separator />
+            <!--<Button Content="{ext:Image /images/cut.png}" Command="Cut" ToolTip="Cut" />
+            <Button Content="{ext:Image /images/copy.png}" Command="Copy" ToolTip="Copy" />
+            <Button Command="Paste" ToolTip="Paste">
+                <Image Source="/images/paste.png" />
+            </Button>-->
+        </ToolBar>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <TreeView FontSize="12" VirtualizingPanel.IsVirtualizing="True" >
+                <i:Interaction.Behaviors>
+                    <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+                <TreeViewItem ItemsSource="{Binding RegistryTree.ComputerRoots}" IsExpanded="True">
+                    <TreeViewItem.Header>
+                        <vm:RegistryKeyItemSpecial Text="Computer" Icon="/images/workstation2.png" />
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+                <TreeViewItem ItemsSource="{Binding RegistryTree.FileRoots}" IsExpanded="True">
+                    <TreeViewItem.Header>
+                        <vm:RegistryKeyItemSpecial Text="Files" Icon="/images/folder_blue.png" />
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+                <TreeViewItem ItemsSource="{Binding Favorites}" IsExpanded="True">
+                    <TreeViewItem.Header>
+                        <vm:RegistryKeyItemSpecial Text="Favorites" Icon="/images/favorites.png" />
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+            </TreeView>
+            <DataGrid Grid.Column="1" VirtualizingPanel.IsVirtualizing="False" ItemsSource="{Binding SelectedItem.Values}" 
+                      AutoGenerateColumns="False" GridLinesVisibility="Horizontal" SelectionUnit="FullRow" SelectionMode="Extended" CanUserReorderColumns="False" 
+                      CanUserResizeRows="False" CanUserSortColumns="True" IsReadOnly="{Binding IsReadOnlyMode}" Background="WhiteSmoke">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Name" MinWidth="90" SortMemberPath="Name" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,4,0">
+                                    <Image Source="{Binding DataType, Converter={StaticResource dataType2image}}" Width="16" Height="16" />
+                                    <TextBlock Text="{Binding Name}" Margin="4,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding Name}" x:Name="text" />
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Name}" Value="(Default)">
+                                        <Setter Property="IsReadOnly" TargetName="text" Value="True" />
+                                        <Setter Property="IsReadOnlyCaretVisible" Value="False" TargetName="text" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Type" Binding="{Binding DataTypeAsString}" IsReadOnly="True" MinWidth="80" />
+                    <DataGridTemplateColumn Header="Value" MinWidth="150" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ValueAsString}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="Black" Width="3" Margin="-1,0" />
+        </Grid>
+        <StatusBar Grid.Row="3">
+            <TextBlock Text="{Binding CurrentPath}" />
+        </StatusBar>
+    </Grid>
+</Window>
