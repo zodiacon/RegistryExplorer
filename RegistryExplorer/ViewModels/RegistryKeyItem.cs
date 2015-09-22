@@ -13,10 +13,10 @@ namespace RegistryExplorer.ViewModels {
 		RegistryKey _root;
 		public string Path { get; private set; }
 
-		public RegistryKeyItem(RegistryKeyItem parent, string name) : base(parent) {
+		public RegistryKeyItem(RegistryKeyItem parent, string text) : base(parent) {
 			_root = parent.Root;
-			Text = name;
-			Path = string.Concat(parent.Path, parent.Path != null ? "\\" : string.Empty, name);
+			Text = text;
+			Path = string.Concat(parent.Path, parent.Path != null ? "\\" : string.Empty, text);
 		}
 
 		public RegistryKeyItem(RegistryKey root) : base(null) {
@@ -31,23 +31,25 @@ namespace RegistryExplorer.ViewModels {
 
 		public override ObservableCollection<RegistryKeyItemBase> SubItems {
 			get {
-				RegistryKey key = null;
-				string[] names;
-				if(Path != null) {
-					key = TryOpenSubKey(_root, Path);
-					if(key == null)
-						return null;
-					names = TryGetSubKeyNames(key);
-					if(names == null)
-						return null;
+				if(_subItems == null) {
+					RegistryKey key = null;
+					string[] names;
+					if(Path != null) {
+						key = TryOpenSubKey(_root, Path);
+						if(key == null)
+							return null;
+						names = TryGetSubKeyNames(key);
+						if(names == null)
+							return null;
+					}
+					else
+						names = _root.GetSubKeyNames();
+					var items = names.OrderBy(n => n).Select(name => new RegistryKeyItem(this, name));
+					if(key != null)
+						key.Dispose();
+					_subItems = new ObservableCollection<RegistryKeyItemBase>(items);
 				}
-				else
-					names = _root.GetSubKeyNames();
-				var items = names.OrderBy(n => n).Select(name => new RegistryKeyItem(this, name));
-				if(key != null)
-					key.Dispose();
-				
-				return new ObservableCollection<RegistryKeyItemBase>(items);
+				return _subItems;
 			}
 		}
 

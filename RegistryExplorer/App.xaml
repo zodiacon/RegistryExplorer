@@ -4,6 +4,5 @@
              xmlns:conv="clr-namespace:RegistryExplorer.Converters"
              >
     <Application.Resources>
-        <conv:DataTypeToImageConverter x:Key="dataType2image" />
     </Application.Resources>
 </Application>

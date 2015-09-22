@@ -15,12 +15,12 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommandBase ExitCommand { get; private set; }
 		public DelegateCommandBase LoadHiveCommand { get; private set; }
 
-		List<RegistryKeyItemSpecial> _roots;
+		List<RegistryKeyItemBase> _roots;
 
-		public IEnumerable<RegistryKeyItemBase> RootItems {
+		public IList<RegistryKeyItemBase> RootItems {
 			get {
 				if(_roots == null)
-					_roots = new List<RegistryKeyItemSpecial> {
+					_roots = new List<RegistryKeyItemBase> {
 						new RegistryKeyItemSpecial(null) {
 							Text = "Computer",
 							SubItems = {
@@ -69,8 +69,13 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 		public MainViewModel() {
-			NativeMethods.EnablePrivilege("SeRestorePrivilege");
-			NativeMethods.EnablePrivilege("SeBackupPrivilege");
+			//try {
+			//	NativeMethods.EnablePrivilege("SeRestorePrivilege");
+			//	NativeMethods.EnablePrivilege("SeBackupPrivilege");
+			//}
+			//catch {
+			//}
+
 			ExitCommand = new DelegateCommand(() => Application.Current.Shutdown());
 
 			LoadHiveCommand = new DelegateCommand(() => {

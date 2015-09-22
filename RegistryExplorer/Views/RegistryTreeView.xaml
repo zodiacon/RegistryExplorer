@@ -6,7 +6,6 @@
              xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:b="clr-namespace:RegistryExplorer.Behaviors"
-             KeyboardNavigation.TabNavigation="Local"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -30,7 +29,7 @@
 
     </UserControl.Resources>
 
-    <TreeView FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" Focusable="True" IsTabStop="True">
+    <TreeView FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" IsTabStop="True">
         <i:Interaction.Behaviors>
             <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             <b:KeyNavigationTreeViewBehavior />

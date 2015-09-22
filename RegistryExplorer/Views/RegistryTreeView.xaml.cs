@@ -17,7 +17,7 @@ namespace RegistryExplorer.Views {
 	/// <summary>
 	/// Interaction logic for RegistryTreeView.xaml
 	/// </summary>
-	public partial class RegistryTreeView : UserControl {
+	public partial class RegistryTreeView {
 		public RegistryTreeView() {
 			InitializeComponent();
 		}

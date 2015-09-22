@@ -19,6 +19,8 @@
             <MenuItem Header="_Load Hive..." Command="{Binding LoadHiveCommand}" Icon="{ext:Image /images/import2.png}" />
             <MenuItem Header="_Unload Hive" Command="{Binding UnloadHiveCommand}" />
             <Separator />
+            <MenuItem Header="Launch with Admin rights" Command="{Binding LaunchWithAdminRightsCommand}" />
+            <Separator />
             <MenuItem Header="E_xit" Command="{Binding ExitCommand}" Icon="{ext:Image /images/exit.png}" />
         </MenuItem>
         <MenuItem Header="_Edit">

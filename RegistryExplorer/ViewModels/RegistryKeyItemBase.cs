@@ -8,8 +8,8 @@ using Prism.Mvvm;
 
 namespace RegistryExplorer.ViewModels {
 	abstract class RegistryKeyItemBase : BindableBase {
-		private string _name;
-		private ObservableCollection<RegistryKeyItemBase> _subItems;
+		private string _text;
+		protected ObservableCollection<RegistryKeyItemBase> _subItems;
 
 		public RegistryKeyItemBase Parent { get; private set; }
 
@@ -26,8 +26,8 @@ namespace RegistryExplorer.ViewModels {
 		}
 
 		public string Text {
-			get { return _name; }
-			set { SetProperty(ref _name, value); }
+			get { return _text; }
+			set { SetProperty(ref _text, value); }
 		}
 
 		private bool _isExpanded;
@@ -46,7 +46,7 @@ namespace RegistryExplorer.ViewModels {
 
 
 		public override string ToString() {
-			return _name.ToString();
+			return _text.ToString();
 		}
 	}
 }
