@@ -7,36 +7,47 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
+using System.Windows.Threading;
 using RegistryExplorer.ViewModels;
 
 namespace RegistryExplorer.Behaviors {
 	class KeyNavigationTreeViewBehavior : Behavior<TreeView> {
-		private string _searchterm = "";
-		private DateTime _lastSearch = DateTime.Now;
+		string _searchterm = string.Empty;
+		DateTime _lastSearch = DateTime.Now;
+		DispatcherTimer _timer;
 
 		protected override void OnAttached() {
 			base.OnAttached();
 
 			AssociatedObject.KeyUp += AssociatedObject_KeyUp;
 			AssociatedObject.TextInput += AssociatedObject_TextInput;
+
+			_timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(.5) };
+			_timer.Tick += _timer_Tick;
 		}
 
-		void AssociatedObject_TextInput(object sender, TextCompositionEventArgs e) {
-			if((DateTime.Now - _lastSearch).Milliseconds > 300)
-				_searchterm = "";
+		void _timer_Tick(object sender, EventArgs e) {
+			_timer.Stop();
+
+			if(string.IsNullOrEmpty(_searchterm))
+				return;
 
 			var item = AssociatedObject.SelectedItem as RegistryKeyItemBase;
 			if(item == null) return;
 
-			Debug.Assert(item != null);
-
-			_lastSearch = DateTime.Now;
-			_searchterm += e.Text;
-
 			var found = SearchSubTree(item);
-			if(found != null) {
+			if(found != null)
 				found.IsSelected = true;
+		}
+
+		void AssociatedObject_TextInput(object sender, TextCompositionEventArgs e) {
+			_timer.Start();
+			if((DateTime.Now - _lastSearch).Milliseconds < 300) {
+				_searchterm += e.Text;
+				return;
 			}
+
+			_searchterm = e.Text;
 		}
 
 
@@ -58,6 +69,10 @@ namespace RegistryExplorer.Behaviors {
 						return subItem;
 					}
 				}
+
+				//var index = item.Parent.SubItems.IndexOf(item);
+				//if(index < item.Parent.SubItems.Count)
+				//	return SearchSubTree(item.Parent.SubItems[index]);
 			}
 			return null;
 		}
