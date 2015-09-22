@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,13 +12,38 @@ using Prism.Mvvm;
 
 namespace RegistryExplorer.ViewModels {
 	class MainViewModel : BindableBase {
-		RegistryTree _registry = new RegistryTree();
-
 		public DelegateCommandBase ExitCommand { get; private set; }
 		public DelegateCommandBase LoadHiveCommand { get; private set; }
 
-		public RegistryTree RegistryTree {
-			get { return _registry; }
+		List<RegistryKeyItemSpecial> _roots;
+
+		public IEnumerable<RegistryKeyItemBase> RootItems {
+			get {
+				if(_roots == null)
+					_roots = new List<RegistryKeyItemSpecial> {
+						new RegistryKeyItemSpecial(null) {
+							Text = "Computer",
+							SubItems = {
+								new RegistryKeyItem(Registry.ClassesRoot),
+								new RegistryKeyItem(Registry.CurrentUser),
+								new RegistryKeyItem(Registry.LocalMachine),
+								new RegistryKeyItem(Registry.CurrentConfig),
+								new RegistryKeyItem(Registry.Users),
+							},
+							Icon = "/images/workstation2.png",
+							IsExpanded = true
+						},
+						new RegistryKeyItemSpecial(null) {
+							Text = "Files",
+							Icon = "/images/folder_blue.png"
+						},
+						new RegistryKeyItemSpecial(null) {
+							Text = "Favorites",
+							Icon = "/images/favorites.png"
+						}
+					};
+				return _roots;
+			}
 		}
 
 		private RegistryKeyItemBase _selectedItem;
@@ -70,6 +96,6 @@ namespace RegistryExplorer.ViewModels {
 			get { return _isReadOnlyMode; }
 			set { SetProperty(ref _isReadOnlyMode, value); }
 		}
-		
+
 	}
 }

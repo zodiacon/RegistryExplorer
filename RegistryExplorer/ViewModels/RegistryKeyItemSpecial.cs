@@ -11,5 +11,9 @@ namespace RegistryExplorer.ViewModels {
 		public IEnumerable<object> Values {
 			get { return null; }
 		}
+
+		public RegistryKeyItemSpecial(RegistryKeyItemBase parent)
+			: base(parent) {
+		}
 	}
 }

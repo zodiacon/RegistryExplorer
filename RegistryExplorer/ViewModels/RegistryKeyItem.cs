@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Security;
@@ -12,39 +13,41 @@ namespace RegistryExplorer.ViewModels {
 		RegistryKey _root;
 		public string Path { get; private set; }
 
-		public RegistryKeyItem(RegistryKeyItem parent, string name) {
+		public RegistryKeyItem(RegistryKeyItem parent, string name) : base(parent) {
 			_root = parent.Root;
 			Text = name;
 			Path = string.Concat(parent.Path, parent.Path != null ? "\\" : string.Empty, name);
 		}
 
-		public RegistryKeyItem(RegistryKey root) {
+		public RegistryKeyItem(RegistryKey root) : base(null) {
 			_root = root;
 			Text = root.Name;
+			//SubItems = new ObservableCollection<RegistryKeyItemBase>(SubKeys);
 		}
 
 		public RegistryKey Root {
 			get { return _root; }
 		}
 
-		public IEnumerable<RegistryKeyItem> SubKeys {
+		public override ObservableCollection<RegistryKeyItemBase> SubItems {
 			get {
 				RegistryKey key = null;
 				string[] names;
 				if(Path != null) {
 					key = TryOpenSubKey(_root, Path);
 					if(key == null)
-						return Enumerable.Empty<RegistryKeyItem>();
+						return null;
 					names = TryGetSubKeyNames(key);
 					if(names == null)
-						return Enumerable.Empty<RegistryKeyItem>();
+						return null;
 				}
 				else
 					names = _root.GetSubKeyNames();
 				var items = names.OrderBy(n => n).Select(name => new RegistryKeyItem(this, name));
 				if(key != null)
 					key.Dispose();
-				return items;
+				
+				return new ObservableCollection<RegistryKeyItemBase>(items);
 			}
 		}
 
@@ -99,6 +102,17 @@ namespace RegistryExplorer.ViewModels {
 				key.SetValue(newname, key.GetValue(oldname));
 				key.DeleteValue(oldname);
 			}
+		}
+
+		public override bool Equals(object obj) {
+			var other = obj as RegistryKeyItem;
+			if(other == null) return false;
+
+			return _root.Name == other.Root.Name && Path == other.Path;
+		}
+
+		public override int GetHashCode() {
+			return _root.Name.GetHashCode() ^ (Path != null ? Path.GetHashCode() : 0);
 		}
 	}
 }

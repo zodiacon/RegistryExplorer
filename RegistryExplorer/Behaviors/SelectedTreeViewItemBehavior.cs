@@ -21,10 +21,6 @@ namespace RegistryExplorer.Behaviors {
 		}
 
 		void AssociatedObject_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e) {
-			var item = e.NewValue as TreeViewItem;
-			if(item != null)
-				SelectedItem = item.Header;
-			else
 				SelectedItem = e.NewValue;
 		}
 		

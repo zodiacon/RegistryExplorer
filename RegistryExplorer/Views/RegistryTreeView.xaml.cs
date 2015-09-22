@@ -21,5 +21,6 @@ namespace RegistryExplorer.Views {
 		public RegistryTreeView() {
 			InitializeComponent();
 		}
+
 	}
 }

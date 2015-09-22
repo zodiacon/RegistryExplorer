@@ -32,7 +32,7 @@
             </Style>
         </DataGrid.ColumnHeaderStyle>
         <DataGrid.Columns>
-            <DataGridTemplateColumn Header="Name" MinWidth="90" SortMemberPath="Name" >
+            <DataGridTemplateColumn Header="Name" MinWidth="90" SortMemberPath="Name"  >
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="0,0,4,0">
@@ -54,7 +54,7 @@
                 </DataGridTemplateColumn.CellEditingTemplate>
             </DataGridTemplateColumn>
             <DataGridTextColumn Header="Type" Binding="{Binding DataTypeAsString}" IsReadOnly="True" MinWidth="80" />
-            <DataGridTemplateColumn Header="Value" MinWidth="150" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}">
+            <DataGridTemplateColumn Header="Value" MinWidth="150" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}" SortMemberPath="ValueAsString">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding ValueAsString}" />

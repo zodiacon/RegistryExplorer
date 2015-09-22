@@ -9,7 +9,7 @@ using Prism.Mvvm;
 
 namespace RegistryExplorer.ViewModels {
 	class RegistryValue : BindableBase {
-		Dictionary<RegistryValueKind, string> _types = new Dictionary<RegistryValueKind, string> {
+		static Dictionary<RegistryValueKind, string> _types = new Dictionary<RegistryValueKind, string> {
 			{ RegistryValueKind.Binary, "REG_BINARY" },
 			{ RegistryValueKind.DWord, "REG_DWORD" },
 			{ RegistryValueKind.ExpandString, "REG_EXPAND_SZ" },

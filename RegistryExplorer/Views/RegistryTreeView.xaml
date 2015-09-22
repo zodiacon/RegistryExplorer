@@ -4,51 +4,44 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
-            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:b="clr-namespace:RegistryExplorer.Behaviors"
-
+             KeyboardNavigation.TabNavigation="Local"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <HierarchicalDataTemplate DataType="{x:Type vm:RegistryKeyItem}" ItemsSource="{Binding SubKeys}">
+        <HierarchicalDataTemplate DataType="{x:Type vm:RegistryKeyItem}" ItemsSource="{Binding SubItems}" >
             <StackPanel Orientation="Horizontal">
                 <Image Source="/images/folder_closed.png" Width="16" Height="16" x:Name="_image" />
                 <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,0,0" />
             </StackPanel>
             <HierarchicalDataTemplate.Triggers>
-                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
                     <Setter Property="Source" TargetName="_image" Value="/images/folder.png" />
                 </DataTrigger>
             </HierarchicalDataTemplate.Triggers>
         </HierarchicalDataTemplate>
-        <DataTemplate DataType="{x:Type vm:RegistryKeyItemSpecial}" >
+        <HierarchicalDataTemplate DataType="{x:Type vm:RegistryKeyItemSpecial}" ItemsSource="{Binding SubItems}">
             <StackPanel Orientation="Horizontal">
                 <Image Source="{Binding Icon}" Width="16" Height="16" x:Name="_image" />
                 <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,0,0" />
             </StackPanel>
-        </DataTemplate>
+        </HierarchicalDataTemplate>
 
     </UserControl.Resources>
-    
-    <TreeView FontSize="12" VirtualizingPanel.IsVirtualizing="True" >
+
+    <TreeView FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" Focusable="True" IsTabStop="True">
         <i:Interaction.Behaviors>
             <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+            <b:KeyNavigationTreeViewBehavior />
         </i:Interaction.Behaviors>
-        <TreeViewItem ItemsSource="{Binding RegistryTree.ComputerRoots}" IsExpanded="True">
-            <TreeViewItem.Header>
-                <vm:RegistryKeyItemSpecial Text="Computer" Icon="/images/workstation2.png" />
-            </TreeViewItem.Header>
-        </TreeViewItem>
-        <TreeViewItem ItemsSource="{Binding RegistryTree.FileRoots}" IsExpanded="True">
-            <TreeViewItem.Header>
-                <vm:RegistryKeyItemSpecial Text="Files" Icon="/images/folder_blue.png" />
-            </TreeViewItem.Header>
-        </TreeViewItem>
-        <TreeViewItem ItemsSource="{Binding Favorites}" IsExpanded="True">
-            <TreeViewItem.Header>
-                <vm:RegistryKeyItemSpecial Text="Favorites" Icon="/images/favorites.png" />
-            </TreeViewItem.Header>
-        </TreeViewItem>
+        <TreeView.ItemContainerStyle>
+            <Style TargetType="TreeViewItem">
+                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+            </Style>
+        </TreeView.ItemContainerStyle>
     </TreeView>
 
 </UserControl>
