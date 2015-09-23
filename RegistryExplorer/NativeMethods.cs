@@ -45,7 +45,8 @@ namespace RegistryExplorer {
 			privilege.GetType().GetMethod("Revert").Invoke(privilege, null);
 		}
 
-
+		[DllImport("user32")]
+		public static extern bool MessageBeep(uint type);
 
 		internal static void Dispose() {
 			foreach(var p in _privileges.Keys)

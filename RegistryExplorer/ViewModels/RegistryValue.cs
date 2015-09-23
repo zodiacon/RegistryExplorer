@@ -57,6 +57,7 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
+
 		public string ValueAsString {
 			get {
 				if(Value == null)

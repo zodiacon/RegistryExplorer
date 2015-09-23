@@ -32,9 +32,11 @@
             <MenuItem Command="SelectAll" />
             <Separator />
             <MenuItem Header="Re_name" InputGestureText="F2" Command="{Binding BeginEditCommand}" CommandParameter="{Binding SelectedValue}" />
+            <Separator />
+            <MenuItem Header="_Permissions..." Command="{Binding EditPermissionsCommand}" Icon="{ext:Image /images/shield.png}" />
         </MenuItem>
         <MenuItem Header="_Search">
-
+            <MenuItem Header="_Find..." InputGestureText="Ctrl+F" Command="{Binding FindCommand}" Icon="{ext:Image /images/find.png}"/>
         </MenuItem>
         <MenuItem Header="_Options">
             <MenuItem Header="_Fonts..." />

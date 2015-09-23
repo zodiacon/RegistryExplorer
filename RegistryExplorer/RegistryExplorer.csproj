@@ -68,8 +68,10 @@
     <Compile Include="Behaviors\KeyNavigationTreeViewBehavior.cs" />
     <Compile Include="Behaviors\SelectedTreeViewItemBehavior.cs" />
     <Compile Include="Behaviors\ValueCellTemplateSelector.cs" />
+    <Compile Include="Behaviors\VirtualizingStackPanelEx.cs" />
     <Compile Include="Converters\DataTypeToImageConverter.cs" />
     <Compile Include="Extensions\ImageExtension.cs" />
+    <Compile Include="ViewModels\DataGridViewModel.cs" />
     <Compile Include="ViewModels\RegistryKeyItemBase.cs" />
     <Compile Include="ViewModels\RegistryKeyItemSpecial.cs" />
     <Compile Include="NativeMethods.cs" />
@@ -192,6 +194,22 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\DataTypes\empty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\shield.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\find.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\find_next.png" />
+    <Resource Include="Images\find_previous.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\delete2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

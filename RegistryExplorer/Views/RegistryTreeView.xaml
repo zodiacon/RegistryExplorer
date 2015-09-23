@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
+             xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:b="clr-namespace:RegistryExplorer.Behaviors"
              mc:Ignorable="d" 
@@ -29,18 +30,42 @@
 
     </UserControl.Resources>
 
-    <TreeView FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" IsTabStop="True">
-        <i:Interaction.Behaviors>
-            <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
-            <b:KeyNavigationTreeViewBehavior />
-        </i:Interaction.Behaviors>
-        <TreeView.ItemContainerStyle>
-            <Style TargetType="TreeViewItem">
-                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
-            </Style>
-        </TreeView.ItemContainerStyle>
-    </TreeView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <!--<DockPanel>
+            <Button FontSize="16" FontWeight="Bold" DockPanel.Dock="Right" Margin="2,2,8,2" Padding="2" Command="{Binding ClearFilter}">
+                <Image Source="/images/delete2.png" Stretch="None" />
+            </Button>
+            <TextBox Text="{Binding FilterText}" Margin="4,2" VerticalAlignment="Center" Padding="2"/>
+        </DockPanel>-->
+        <TreeView Grid.Row="1" FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" IsTabStop="True">
+            <i:Interaction.Behaviors>
+                <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+                <b:KeyNavigationTreeViewBehavior />
+            </i:Interaction.Behaviors>
+            <TreeView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <b:VirtualizingStackPanelEx />
+                </ItemsPanelTemplate>
+            </TreeView.ItemsPanel>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+                    <Setter Property="ItemsPanel">
+                        <Setter.Value>
+                            <ItemsPanelTemplate>
+                                <b:VirtualizingStackPanelEx />
+                            </ItemsPanelTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+    </Grid>
 
 </UserControl>

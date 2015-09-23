@@ -19,7 +19,7 @@ namespace RegistryExplorer.ViewModels {
 			Path = string.Concat(parent.Path, parent.Path != null ? "\\" : string.Empty, text);
 		}
 
-		public RegistryKeyItem(RegistryKey root) : base(null) {
+		public RegistryKeyItem(RegistryKeyItemBase parent, RegistryKey root) : base(parent) {
 			_root = root;
 			Text = root.Name;
 			//SubItems = new ObservableCollection<RegistryKeyItemBase>(SubKeys);

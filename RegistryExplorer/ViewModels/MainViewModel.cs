@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 using Prism.Commands;
@@ -15,24 +18,26 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommandBase ExitCommand { get; private set; }
 		public DelegateCommandBase LoadHiveCommand { get; private set; }
 
+		public DataGridViewModel DataGridViewModel { get; private set; }
+
 		List<RegistryKeyItemBase> _roots;
 
 		public IList<RegistryKeyItemBase> RootItems {
 			get {
-				if(_roots == null)
+				if(_roots == null) {
+					var computer = new RegistryKeyItemSpecial(null) {
+						Text = "Computer",
+						Icon = "/images/workstation2.png",
+						IsExpanded = true
+					};
+					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.ClassesRoot));
+					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.CurrentUser));
+					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.LocalMachine));
+					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.CurrentConfig));
+					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.Users));
+
 					_roots = new List<RegistryKeyItemBase> {
-						new RegistryKeyItemSpecial(null) {
-							Text = "Computer",
-							SubItems = {
-								new RegistryKeyItem(Registry.ClassesRoot),
-								new RegistryKeyItem(Registry.CurrentUser),
-								new RegistryKeyItem(Registry.LocalMachine),
-								new RegistryKeyItem(Registry.CurrentConfig),
-								new RegistryKeyItem(Registry.Users),
-							},
-							Icon = "/images/workstation2.png",
-							IsExpanded = true
-						},
+						computer,
 						new RegistryKeyItemSpecial(null) {
 							Text = "Files",
 							Icon = "/images/folder_blue.png"
@@ -42,6 +47,8 @@ namespace RegistryExplorer.ViewModels {
 							Icon = "/images/favorites.png"
 						}
 					};
+
+				}
 				return _roots;
 			}
 		}
@@ -68,6 +75,7 @@ namespace RegistryExplorer.ViewModels {
 				return SelectedItem.Text;
 			}
 		}
+
 		public MainViewModel() {
 			//try {
 			//	NativeMethods.EnablePrivilege("SeRestorePrivilege");
@@ -75,6 +83,8 @@ namespace RegistryExplorer.ViewModels {
 			//}
 			//catch {
 			//}
+
+			DataGridViewModel = new DataGridViewModel(this);
 
 			ExitCommand = new DelegateCommand(() => Application.Current.Shutdown());
 
