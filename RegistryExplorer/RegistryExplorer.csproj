@@ -67,11 +67,14 @@
     </ApplicationDefinition>
     <Compile Include="Behaviors\KeyNavigationTreeViewBehavior.cs" />
     <Compile Include="Behaviors\SelectedTreeViewItemBehavior.cs" />
+    <Compile Include="Behaviors\TextBoxEditingBehavior.cs" />
     <Compile Include="Behaviors\ValueCellTemplateSelector.cs" />
     <Compile Include="Behaviors\VirtualizingStackPanelEx.cs" />
     <Compile Include="Converters\DataTypeToImageConverter.cs" />
     <Compile Include="Extensions\ImageExtension.cs" />
+    <Compile Include="PropertyFollower.cs" />
     <Compile Include="ViewModels\DataGridViewModel.cs" />
+    <Compile Include="ViewModels\MenuBarViewModel.cs" />
     <Compile Include="ViewModels\RegistryKeyItemBase.cs" />
     <Compile Include="ViewModels\RegistryKeyItemSpecial.cs" />
     <Compile Include="NativeMethods.cs" />

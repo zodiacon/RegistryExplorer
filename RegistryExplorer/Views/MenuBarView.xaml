@@ -26,6 +26,16 @@
         <MenuItem Header="_Edit">
             <MenuItem Header="_Read Only Mode" IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" IsCheckable="True" />
             <Separator />
+            <MenuItem Header="_New">
+                <MenuItem Header="Key" Command="{Binding EditNewKeyCommand}" />
+                <Separator />
+                <MenuItem Header="DWORD Value" Command="{Binding EditNewValue}" CommandParameter="DWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+                <MenuItem Header="QWORD Value" Command="{Binding EditNewValue}" CommandParameter="QWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+                <MenuItem Header="String Value" Command="{Binding EditNewValue}" CommandParameter="String" Icon="{ext:Image /images/datatypes/reg_string.png}"/>
+                <MenuItem Header="Multi String Value" Command="{Binding EditNewValue}" CommandParameter="MultiString" Icon="{ext:Image /images/datatypes/reg_string.png}" />
+                <MenuItem Header="Binary Value" Command="{Binding EditNewValue}" CommandParameter="Binary" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+            </MenuItem>
+            <Separator />
             <MenuItem Command="Cut" Icon="{ext:Image /images/cut.png}" />
             <MenuItem Command="Copy" Icon="{ext:Image /images/copy.png}" />
             <MenuItem Command="Paste" Icon="{ext:Image /images/paste.png}"/>

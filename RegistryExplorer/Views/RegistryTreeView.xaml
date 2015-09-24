@@ -6,18 +6,25 @@
              xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
              xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:b="clr-namespace:RegistryExplorer.Behaviors"
+             xmlns:b="clr-namespace:RegistryExplorer.Behaviors" x:Name="This"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <HierarchicalDataTemplate DataType="{x:Type vm:RegistryKeyItem}" ItemsSource="{Binding SubItems}" >
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/images/folder_closed.png" Width="16" Height="16" x:Name="_image" />
-                <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,0,0" />
-            </StackPanel>
+            <Grid>
+                <StackPanel Orientation="Horizontal" x:Name="_t2">
+                    <Image Source="/images/folder_closed.png" Width="16" Height="16" x:Name="_image" />
+                    <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,0,0"  />
+                </StackPanel>
+                <TextBox Text="{Binding Text}" VerticalAlignment="Center" Padding="2" Margin="3,0,0,0" Visibility="Collapsed" MinWidth="50" x:Name="_t1" />
+            </Grid>
             <HierarchicalDataTemplate.Triggers>
                 <DataTrigger Binding="{Binding IsSelected}" Value="True">
                     <Setter Property="Source" TargetName="_image" Value="/images/folder.png" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsEditing}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" TargetName="_t1" />
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="_t2" />
                 </DataTrigger>
             </HierarchicalDataTemplate.Triggers>
         </HierarchicalDataTemplate>

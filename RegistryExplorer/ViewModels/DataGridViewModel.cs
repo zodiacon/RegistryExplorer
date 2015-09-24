@@ -7,26 +7,18 @@ using System.Windows.Data;
 using Prism.Mvvm;
 
 namespace RegistryExplorer.ViewModels {
-	class DataGridViewModel : BindableBase {
+	class DataGridViewModel : BindableBase, IDisposable {
 		MainViewModel _mainViewModel;
-
+		PropertyFollower<MainViewModel, DataGridViewModel> _follower;
+ 
 		public DataGridViewModel(MainViewModel vm) {
 			_mainViewModel = vm;
 
-			vm.PropertyChanged += vm_PropertyChanged;
-		}
-
-		void vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-			switch(e.PropertyName) {
-			case "SelectedItem":
+			_follower = new PropertyFollower<MainViewModel, DataGridViewModel>(vm, this, nameof(IsReadOnlyMode));
+			_follower.Add(nameof(MainViewModel.SelectedItem), _ => {
 				FilterText = string.Empty;
-				OnPropertyChanged(() => Values);
-				break;
-
-			case "IsReadOnlyMode":
-				OnPropertyChanged(() => IsReadOnlyMode);
-				break;
-			}
+				OnPropertyChanged(nameof(Values));
+			});
 		}
 
 		IEnumerable<RegistryValue> _values;
@@ -48,7 +40,7 @@ namespace RegistryExplorer.ViewModels {
 			get { return _filterText; }
 			set { 
 				if(SetProperty(ref _filterText, value)) {
-					if(string.IsNullOrEmpty(value)) {
+					if(_values != null && string.IsNullOrEmpty(value)) {
 						CollectionViewSource.GetDefaultView(_values).Filter = null;
 					}
 					else if(_values != null) {
@@ -62,6 +54,8 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
-		
+		public void Dispose() {
+			_follower.Dispose();
+		}
 	}
 }

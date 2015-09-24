@@ -106,6 +106,28 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
+		public RegistryKeyItem CreateNewKey() {
+			int i = 1;
+			string name;
+			for(;;) {
+				name = string.Format("NewKey{0}", i);
+				if(!SubItems.Any(si => si.Text.Equals(name, StringComparison.InvariantCultureIgnoreCase)))
+					break;
+				++i;
+			}
+
+			using(var key = _root.OpenSubKey(Path, true).CreateSubKey(name)) {
+				return new RegistryKeyItem(this, name);
+			}
+		}
+
+		private bool _isEditing;
+
+		public bool IsEditing {
+			get { return _isEditing; }
+			set { SetProperty(ref _isEditing, value); }
+		}
+
 		public override bool Equals(object obj) {
 			var other = obj as RegistryKeyItem;
 			if(other == null) return false;

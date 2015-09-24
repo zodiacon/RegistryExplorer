@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -17,6 +18,8 @@ namespace RegistryExplorer.ViewModels {
 	class MainViewModel : BindableBase {
 		public DelegateCommandBase ExitCommand { get; private set; }
 		public DelegateCommandBase LoadHiveCommand { get; private set; }
+		public DelegateCommandBase EditPermissionsCommand { get; private set; }
+		public DelegateCommandBase EditNewKeyCommand { get; private set; }
 
 		public DataGridViewModel DataGridViewModel { get; private set; }
 
@@ -59,7 +62,8 @@ namespace RegistryExplorer.ViewModels {
 			get { return _selectedItem; }
 			set {
 				if(SetProperty(ref _selectedItem, value)) {
-					OnPropertyChanged(() => CurrentPath);
+					OnPropertyChanged(nameof(CurrentPath));
+					EditPermissionsCommand.RaiseCanExecuteChanged();
 				}
 			}
 		}
@@ -77,16 +81,29 @@ namespace RegistryExplorer.ViewModels {
 		}
 
 		public MainViewModel() {
-			//try {
-			//	NativeMethods.EnablePrivilege("SeRestorePrivilege");
-			//	NativeMethods.EnablePrivilege("SeBackupPrivilege");
-			//}
-			//catch {
-			//}
+			try {
+				NativeMethods.EnablePrivilege("SeRestorePrivilege");
+				NativeMethods.EnablePrivilege("SeBackupPrivilege");
+			}
+			catch {
+			}
 
 			DataGridViewModel = new DataGridViewModel(this);
 
 			ExitCommand = new DelegateCommand(() => Application.Current.Shutdown());
+
+			EditNewKeyCommand = new DelegateCommand(() => {
+				var item = SelectedItem as RegistryKeyItem;
+				Debug.Assert(item != null);
+				var newKey = item.CreateNewKey();
+				item.SubItems.Add(newKey);
+				newKey.IsSelected = true;
+				newKey.IsExpanded = true;
+				newKey.IsEditing = true;
+			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem);
+
+			EditPermissionsCommand = new DelegateCommand(() => {
+			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem);
 
 			LoadHiveCommand = new DelegateCommand(() => {
 				var dlg = new OpenFileDialog {
@@ -109,7 +126,12 @@ namespace RegistryExplorer.ViewModels {
 
 		public bool IsReadOnlyMode {
 			get { return _isReadOnlyMode; }
-			set { SetProperty(ref _isReadOnlyMode, value); }
+			set {
+				if(SetProperty(ref _isReadOnlyMode, value)) {
+					EditPermissionsCommand.RaiseCanExecuteChanged();
+					EditNewKeyCommand.RaiseCanExecuteChanged();
+				}
+			}
 		}
 
 	}
