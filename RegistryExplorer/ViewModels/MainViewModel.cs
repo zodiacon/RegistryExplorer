@@ -20,6 +20,9 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommandBase LoadHiveCommand { get; private set; }
 		public DelegateCommandBase EditPermissionsCommand { get; private set; }
 		public DelegateCommandBase EditNewKeyCommand { get; private set; }
+		public DelegateCommandBase BeginRenameCommand { get; }
+
+		public DelegateCommandBase EndEditingCommand { get; }
 
 		public DataGridViewModel DataGridViewModel { get; private set; }
 
@@ -97,13 +100,30 @@ namespace RegistryExplorer.ViewModels {
 				Debug.Assert(item != null);
 				var newKey = item.CreateNewKey();
 				item.SubItems.Add(newKey);
+				item.IsExpanded = true;
 				newKey.IsSelected = true;
-				newKey.IsExpanded = true;
-				newKey.IsEditing = true;
+				IsEditMode = false;
 			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem);
 
 			EditPermissionsCommand = new DelegateCommand(() => {
 			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem);
+
+			EndEditingCommand = new DelegateCommand<string>(name => {
+				try {
+					var item = SelectedItem as RegistryKeyItem;
+					Debug.Assert(item != null);
+					item.RenameKey(item.Text, name);
+					item.Text = name;
+				}
+				catch(Exception ex) {
+					MessageBox.Show(ex.Message, App.Name);
+				}
+				finally {
+					IsEditMode = false;
+				}
+			}, name => SelectedItem.Parent.SubItems.Any(i => i.Text.Equals(name, StringComparison.InvariantCultureIgnoreCase)));
+
+			BeginRenameCommand = new DelegateCommand<RegistryKeyItem>(item => IsEditMode = true, item => !IsReadOnlyMode && item is RegistryKeyItem && !string.IsNullOrEmpty(item.Path));
 
 			LoadHiveCommand = new DelegateCommand(() => {
 				var dlg = new OpenFileDialog {
@@ -130,8 +150,16 @@ namespace RegistryExplorer.ViewModels {
 				if(SetProperty(ref _isReadOnlyMode, value)) {
 					EditPermissionsCommand.RaiseCanExecuteChanged();
 					EditNewKeyCommand.RaiseCanExecuteChanged();
+					BeginRenameCommand.RaiseCanExecuteChanged();
 				}
 			}
+		}
+
+		private bool _isEditMode;
+
+		public bool IsEditMode {
+			get { return _isEditMode; }
+			set { SetProperty(ref _isEditMode, value); }
 		}
 
 	}

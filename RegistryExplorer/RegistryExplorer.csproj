@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RegistryExplorer</RootNamespace>
     <AssemblyName>RegistryExplorer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -41,6 +41,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Prism, Version=6.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.6.0.1\lib\net45\Prism.dll</HintPath>
       <Private>True</Private>
@@ -68,10 +69,12 @@
     <Compile Include="Behaviors\KeyNavigationTreeViewBehavior.cs" />
     <Compile Include="Behaviors\SelectedTreeViewItemBehavior.cs" />
     <Compile Include="Behaviors\TextBoxEditingBehavior.cs" />
+    <Compile Include="Behaviors\TreeViewHelper.cs" />
     <Compile Include="Behaviors\ValueCellTemplateSelector.cs" />
     <Compile Include="Behaviors\VirtualizingStackPanelEx.cs" />
     <Compile Include="Converters\DataTypeToImageConverter.cs" />
     <Compile Include="Extensions\ImageExtension.cs" />
+    <Compile Include="ExtendedCommands.cs" />
     <Compile Include="PropertyFollower.cs" />
     <Compile Include="ViewModels\DataGridViewModel.cs" />
     <Compile Include="ViewModels\MenuBarViewModel.cs" />

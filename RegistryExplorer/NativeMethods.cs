@@ -27,6 +27,9 @@ namespace RegistryExplorer {
 		[DllImport("advapi32")]
 		public static extern int RegLoadAppKey(string file, out SafeRegistryHandle hKey, RegistryKeyPermissions samDesired, uint options, uint reserved);
 
+		[DllImport("advapi32")]
+		public static extern int RegRenameKey(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string oldname, [MarshalAs(UnmanagedType.LPWStr)] string newname);
+
 		static Dictionary<string, object> _privileges = new Dictionary<string, object>();
 
 		public static void EnablePrivilege(string name) {

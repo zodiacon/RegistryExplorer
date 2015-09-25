@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Interactivity;
+using RegistryExplorer.ViewModels;
 
 namespace RegistryExplorer.Behaviors {
 	class SelectedTreeViewItemBehavior : Behavior<TreeView> {
@@ -15,23 +17,23 @@ namespace RegistryExplorer.Behaviors {
 			AssociatedObject.SelectedItemChanged += AssociatedObject_SelectedItemChanged;
 		}
 
+
 		protected override void OnDetaching() {
 			AssociatedObject.SelectedItemChanged -= AssociatedObject_SelectedItemChanged;
 			base.OnDetaching();
 		}
 
 		void AssociatedObject_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e) {
-				SelectedItem = e.NewValue;
+			SelectedItem = (RegistryKeyItemBase)e.NewValue;
 		}
-		
-		public object SelectedItem {
-			get { return (object)GetValue(SelectedItemProperty); }
+
+		public RegistryKeyItemBase SelectedItem {
+			get { return (RegistryKeyItemBase)GetValue(SelectedItemProperty); }
 			set { SetValue(SelectedItemProperty, value); }
 		}
 
 		public static readonly DependencyProperty SelectedItemProperty =
-			 DependencyProperty.Register("SelectedItem", typeof(object), typeof(SelectedTreeViewItemBehavior), new PropertyMetadata(null));
-
+			 DependencyProperty.Register("SelectedItem", typeof(RegistryKeyItemBase), typeof(SelectedTreeViewItemBehavior), new PropertyMetadata(null));
 		
 	}
 }

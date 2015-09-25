@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
+using Prism.Commands;
 
 namespace RegistryExplorer.ViewModels {
 	class RegistryKeyItem : RegistryKeyItemBase {
@@ -57,7 +59,7 @@ namespace RegistryExplorer.ViewModels {
 			try {
 				return key.GetSubKeyNames();
 			}
-			catch(IOException ) {
+			catch(IOException) {
 				return null;
 			}
 		}
@@ -89,7 +91,7 @@ namespace RegistryExplorer.ViewModels {
 					});
 					if(defaultMissing)
 						pvalues = Enumerable.Repeat(new RegistryValue(this) {
-							Name ="(Default)",
+							Name = "(Default)",
 							DataType = RegistryValueKind.None
 						}, 1).Concat(pvalues);
 					return pvalues.ToArray();
@@ -106,26 +108,20 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
-		public RegistryKeyItem CreateNewKey() {
+		public RegistryKeyItem CreateNewKey(string name = null) {
 			int i = 1;
-			string name;
-			for(;;) {
-				name = string.Format("NewKey{0}", i);
-				if(!SubItems.Any(si => si.Text.Equals(name, StringComparison.InvariantCultureIgnoreCase)))
-					break;
-				++i;
+			if(name == null) {
+				for(;;) {
+					name = string.Format("NewKey{0}", i);
+					if(!SubItems.Any(si => si.Text.Equals(name, StringComparison.InvariantCultureIgnoreCase)))
+						break;
+					++i;
+				}
 			}
 
 			using(var key = _root.OpenSubKey(Path, true).CreateSubKey(name)) {
 				return new RegistryKeyItem(this, name);
 			}
-		}
-
-		private bool _isEditing;
-
-		public bool IsEditing {
-			get { return _isEditing; }
-			set { SetProperty(ref _isEditing, value); }
 		}
 
 		public override bool Equals(object obj) {
@@ -138,5 +134,15 @@ namespace RegistryExplorer.ViewModels {
 		public override int GetHashCode() {
 			return _root.Name.GetHashCode() ^ (Path != null ? Path.GetHashCode() : 0);
 		}
-	}
+
+		public void RenameKey(string oldname, string newname) {
+			using(var key = _root.OpenSubKey((Parent as RegistryKeyItem).Path, true)) {
+				int error = NativeMethods.RegRenameKey(key.Handle, oldname, newname);
+				if(error != 0)
+					throw new Win32Exception(error);
+			}
+		}
+
+		public DelegateCommandBase BeginRenameCommand { get; } = App.MainViewModel.BeginRenameCommand;
+    }
 }
