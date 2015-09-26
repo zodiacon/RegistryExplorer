@@ -55,6 +55,10 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
+		public void DeleteKey(string name) {
+			throw new NotImplementedException();
+		}
+
 		private string[] TryGetSubKeyNames(RegistryKey key) {
 			try {
 				return key.GetSubKeyNames();
@@ -119,9 +123,7 @@ namespace RegistryExplorer.ViewModels {
 				}
 			}
 
-			using(var key = _root.OpenSubKey(Path, true).CreateSubKey(name)) {
-				return new RegistryKeyItem(this, name);
-			}
+			return new RegistryKeyItem(this, name);
 		}
 
 		public override bool Equals(object obj) {
@@ -144,5 +146,5 @@ namespace RegistryExplorer.ViewModels {
 		}
 
 		public DelegateCommandBase BeginRenameCommand { get; } = App.MainViewModel.BeginRenameCommand;
-    }
+	}
 }

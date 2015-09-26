@@ -10,6 +10,8 @@
         <Menu.ItemContainerStyle>
             <Style TargetType="MenuItem" >
                 <Setter Property="Background" Value="WhiteSmoke" />
+                <Style.Triggers>
+                </Style.Triggers>
             </Style>
         </Menu.ItemContainerStyle>
         <MenuItem Header="_File">
@@ -24,6 +26,9 @@
             <MenuItem Header="E_xit" Command="{Binding ExitCommand}" Icon="{ext:Image /images/exit.png}" />
         </MenuItem>
         <MenuItem Header="_Edit">
+            <MenuItem InputGestureText="Ctrl+Z" Command="{Binding UndoCommand}" Icon="{ext:Image /images/undo.png}" HeaderStringFormat="Undo {0}" Header="{Binding CommandManager.UndoDescription}" />
+            <MenuItem InputGestureText="Ctrl+Y" Command="{Binding RedoCommand}" Icon="{ext:Image /images/redo.png}" HeaderStringFormat="Redo {0}" Header="{Binding CommandManager.RedoDescription}" />
+            <Separator />
             <MenuItem Header="_Read Only Mode" IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" IsCheckable="True" />
             <Separator />
             <MenuItem Header="_New">
@@ -45,12 +50,14 @@
             <Separator />
             <MenuItem Header="_Permissions..." Command="{Binding EditPermissionsCommand}" Icon="{ext:Image /images/shield.png}" />
         </MenuItem>
+        <MenuItem Header="_View">
+            <MenuItem Header="_Fonts..." />
+        </MenuItem>
         <MenuItem Header="_Search">
             <MenuItem Header="_Find..." InputGestureText="Ctrl+F" Command="{Binding FindCommand}" Icon="{ext:Image /images/find.png}"/>
         </MenuItem>
         <MenuItem Header="_Options">
-            <MenuItem Header="_Fonts..." />
-            <Separator />
+            <MenuItem Header="Always On Top" IsCheckable="True" IsChecked="{Binding Options.AlwaysOnTop, Mode=TwoWay}" />
             <MenuItem Header="_Save Settings on Exit" IsCheckable="True" IsChecked="{Binding SaveSettingsOnExit, Mode=TwoWay}" />
         </MenuItem>
         <MenuItem Header="_Help">

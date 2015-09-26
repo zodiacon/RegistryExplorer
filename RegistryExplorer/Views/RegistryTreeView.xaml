@@ -13,9 +13,9 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="bool2vis" />
         <HierarchicalDataTemplate DataType="{x:Type vm:RegistryKeyItem}" ItemsSource="{Binding SubItems}" >
-            <StackPanel Orientation="Horizontal" >
+            <StackPanel Orientation="Horizontal" Margin="2,1">
                 <Image Source="/images/folder_closed.png" Width="16" Height="16" x:Name="_image" />
-                <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,0,0" x:Name="_t2"/>
+                <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,2,0" x:Name="_t2" />
 
                 <TextBox Text="{Binding Text, Mode=OneWay}" VerticalAlignment="Center" Padding="2" Margin="3,0,0,0" 
                           MinWidth="50" x:Name="_t1" Visibility="Collapsed">

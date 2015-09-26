@@ -4,14 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="30" d:DesignWidth="400">
     <ToolBar HorizontalAlignment="Stretch" Background="WhiteSmoke" >
-        <!--<StackPanel.Resources>
-                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                    <Setter Property="Margin" Value="1" />
-                    <Setter Property="Padding" Value="2" />
-                </Style>
-            </StackPanel.Resources>-->
+        <ToolBar.Resources>
+            <Style TargetType="Button" x:Key="{x:Static ToolBar.ButtonStyleKey}">
+                <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value=".5" />
+                    </Trigger>    
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="ToggleButton" x:Key="{x:Static ToolBar.ToggleButtonStyleKey}">
+                <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Opacity" Value=".5" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ToolBar.Resources>
+        <Button Command="{Binding UndoCommand}" ToolTip="Undo" >
+            <Image Source="/images/undo.png" />
+        </Button>
+        <Button Command="{Binding RedoCommand}" ToolTip="Redo" >
+            <Image Source="/images/redo.png" />
+        </Button>
+        <Separator />
         <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}">
             <StackPanel Orientation="Horizontal">
                 <Image Source="/images/book_blue.png" Width="16" Height="16" />

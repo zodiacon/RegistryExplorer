@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RegistryExplorer</RootNamespace>
     <AssemblyName>RegistryExplorer</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -42,6 +42,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Practices.Unity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Prism, Version=6.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Prism.Core.6.0.1\lib\net45\Prism.dll</HintPath>
       <Private>True</Private>
@@ -72,9 +84,12 @@
     <Compile Include="Behaviors\TreeViewHelper.cs" />
     <Compile Include="Behaviors\ValueCellTemplateSelector.cs" />
     <Compile Include="Behaviors\VirtualizingStackPanelEx.cs" />
+    <Compile Include="CommandManager.cs" />
+    <Compile Include="Model\Commands.cs" />
     <Compile Include="Converters\DataTypeToImageConverter.cs" />
     <Compile Include="Extensions\ImageExtension.cs" />
-    <Compile Include="ExtendedCommands.cs" />
+    <Compile Include="AppCommand.cs" />
+    <Compile Include="Model\Options.cs" />
     <Compile Include="PropertyFollower.cs" />
     <Compile Include="ViewModels\DataGridViewModel.cs" />
     <Compile Include="ViewModels\MenuBarViewModel.cs" />
@@ -185,9 +200,7 @@
   <ItemGroup>
     <Resource Include="Images\workstation2.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Images\DataTypes\reg_binary.png" />
     <Resource Include="Images\DataTypes\reg_string.png" />
@@ -216,6 +229,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\delete2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\redo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
