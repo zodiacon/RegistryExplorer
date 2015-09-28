@@ -35,8 +35,8 @@
                         <Condition Binding="{Binding DataContext.IsEditMode, ElementName=This}" Value="True" />
                     </MultiDataTrigger.Conditions>
 
-                    <Setter Property="Visibility" Value="Visible" TargetName="_t1" />
                     <Setter Property="Visibility" Value="Collapsed" TargetName="_t2" />
+                    <Setter Property="Visibility" Value="Visible" TargetName="_t1" />
                 </MultiDataTrigger>
             </HierarchicalDataTemplate.Triggers>
         </HierarchicalDataTemplate>
@@ -87,9 +87,10 @@
                             </ItemsPanelTemplate>
                         </Setter.Value>
                     </Setter>
+                    <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=TreeView}}" />
                     <Setter Property="ContextMenu">
                         <Setter.Value>
-                            <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                            <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" >
                                 <MenuItem Header="New">
                                     <MenuItem Header="Key" Command="{Binding EditNewKeyCommand}" />
                                     <Separator />

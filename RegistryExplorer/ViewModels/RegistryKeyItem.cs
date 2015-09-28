@@ -56,7 +56,9 @@ namespace RegistryExplorer.ViewModels {
 		}
 
 		public void DeleteKey(string name) {
-			throw new NotImplementedException();
+			using(var key = _root.OpenSubKey(Path, true))
+				key.DeleteSubKeyTree(name);
+			SubItems.Remove(SubItems.First(i => i.Text == name));
 		}
 
 		private string[] TryGetSubKeyNames(RegistryKey key) {
@@ -112,19 +114,27 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
-		public RegistryKeyItem CreateNewKey(string name = null) {
-			int i = 1;
-			if(name == null) {
-				for(;;) {
-					name = string.Format("NewKey{0}", i);
-					if(!SubItems.Any(si => si.Text.Equals(name, StringComparison.InvariantCultureIgnoreCase)))
-						break;
-					++i;
-				}
+		public RegistryKeyItem CreateNewKey(string name) {
+
+			using(var key = _root.CreateSubKey(string.Format("{0}\\{1}", Path, name))) {
+				var newitem = new RegistryKeyItem(this, name);
+				SubItems.Add(newitem);
+				return newitem;
 			}
 
-			return new RegistryKeyItem(this, name);
 		}
+
+		public string GenerateUniqueSubKeyName() {
+			int i = 1;
+
+			for(;;) {
+				string name = string.Format("NewKey{0}", i);
+				if(!SubItems.Any(si => si.Text.Equals(name, StringComparison.InvariantCultureIgnoreCase)))
+					return name;
+				++i;
+			}
+		}
+
 
 		public override bool Equals(object obj) {
 			var other = obj as RegistryKeyItem;

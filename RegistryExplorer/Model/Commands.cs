@@ -11,9 +11,8 @@ namespace RegistryExplorer.Model {
 	}
 
 	class CreateKeyCommandContext {
-		public RegistryKey Root { get; set; }
+		public RegistryKeyItem Key { get; set; }
 		public string Name { get; set; }
-		public string Path { get; set; }
 	}
 
 	static class Commands {
@@ -38,9 +37,9 @@ namespace RegistryExplorer.Model {
 
 		public static IAppCommand CreateKeyCommand(CreateKeyCommandContext context) {
 			return new AppCommand<CreateKeyCommandContext>(context, ctx => {
-				ctx.Root.CreateSubKey(ctx.Path);
+				ctx.Key.CreateNewKey(ctx.Name);
 			}, ctx => {
-				ctx.Root.DeleteSubKey(ctx.Path);
+				ctx.Key.DeleteKey(ctx.Name);
 			}) { Description = "create key" };
 		}
 

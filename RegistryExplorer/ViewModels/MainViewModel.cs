@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Prism.Commands;
@@ -19,7 +20,7 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommandBase LoadHiveCommand { get; private set; }
 		public DelegateCommandBase EditPermissionsCommand { get; private set; }
 		public DelegateCommandBase EditNewKeyCommand { get; private set; }
-		public DelegateCommandBase BeginRenameCommand { get; }
+		public DelegateCommand<RegistryKeyItem> BeginRenameCommand { get; }
 		public DelegateCommand UndoCommand { get; }
 		public DelegateCommand RedoCommand { get; }
 		public DelegateCommandBase EndEditingCommand { get; }
@@ -100,52 +101,53 @@ namespace RegistryExplorer.ViewModels {
 			EditNewKeyCommand = new DelegateCommand(() => {
 				var item = SelectedItem as RegistryKeyItem;
 				Debug.Assert(item != null);
-				var newKey = item.CreateNewKey();
+				var name = item.GenerateUniqueSubKeyName();
+				CommandManager.AddCommand(Commands.CreateKeyCommand(new CreateKeyCommandContext {
+					Key = item,
+					Name = name
+				}));
 				item.IsExpanded = true;
-				newKey.IsSelected = true;
+				var newItem = item.GetSubItem<RegistryKeyItem>(name);
+				newItem.IsSelected = true;
 				IsEditMode = true;
-				IsCreatingNewKey = true;
-			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem);
+			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem)
+			.ObservesProperty(() => IsReadOnlyMode).ObservesProperty(() => SelectedItem);
 
 			EditPermissionsCommand = new DelegateCommand(() => {
-			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem);
+				// TODO
+			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem)
+			.ObservesProperty(() => IsReadOnlyMode).ObservesProperty(() => SelectedItem);
 
 			EndEditingCommand = new DelegateCommand<string>(name => {
 				try {
+					if(name == null)
+						return;
+
 					var item = SelectedItem as RegistryKeyItem;
 					Debug.Assert(item != null);
-					if(item.Text == name) {
-						if(IsCreatingNewKey)
-							item.Parent.SubItems.Remove(item);
-						return;
-					}
 					if(item.Parent.SubItems.Any(i => name.Equals(i.Text, StringComparison.InvariantCultureIgnoreCase))) {
 						MessageBox.Show(string.Format("Key name '{0}' already exists", name), App.Name);
 						return;
 					}
-					if(IsCreatingNewKey) {
-						CommandManager.AddCommand(Commands.CreateKeyCommand(new CreateKeyCommandContext {
-						}));
-					}
-					else {
-						CommandManager.AddCommand(Commands.RenameKeyCommand(new RenameKeyContext {
-							Key = item,
-							OldName = item.Text,
-							NewName = name
-						}));
-					}
+					CommandManager.AddCommand(Commands.RenameKeyCommand(new RenameKeyContext {
+						Key = item,
+						OldName = item.Text,
+						NewName = name
+					}));
+					CommandManager.UpdateChanges();
+					UndoCommand.RaiseCanExecuteChanged();
+					RedoCommand.RaiseCanExecuteChanged();
 				}
 				catch(Exception ex) {
 					MessageBox.Show(ex.Message, App.Name);
 				}
 				finally {
 					IsEditMode = false;
-					IsCreatingNewKey = false;
 				}
-			});
+			}, _ => IsEditMode).ObservesCanExecute(_ => IsEditMode);
 
 			BeginRenameCommand = new DelegateCommand<RegistryKeyItem>(item => IsEditMode = true, item => !IsReadOnlyMode && item is RegistryKeyItem && !string.IsNullOrEmpty(item.Path))
-				.ObservesProperty(() => IsReadOnlyMode);
+				.ObservesProperty(() => IsReadOnlyMode).ObservesProperty(() => SelectedItem);
 
 			UndoCommand = new DelegateCommand(() => {
 				CommandManager.Undo();
@@ -182,8 +184,6 @@ namespace RegistryExplorer.ViewModels {
 			get { return _isReadOnlyMode; }
 			set {
 				if(SetProperty(ref _isReadOnlyMode, value)) {
-					EditPermissionsCommand.RaiseCanExecuteChanged();
-					EditNewKeyCommand.RaiseCanExecuteChanged();
 					CommandManager.UpdateChanges();
 				}
 			}
@@ -197,13 +197,6 @@ namespace RegistryExplorer.ViewModels {
 				if(SetProperty(ref _isEditMode, value)) {
 				}
 			}
-		}
-
-		private bool _isCreatingNewKey;
-
-		public bool IsCreatingNewKey {
-			get { return _isCreatingNewKey; }
-			set { SetProperty(ref _isCreatingNewKey, value); }
 		}
 
 	}

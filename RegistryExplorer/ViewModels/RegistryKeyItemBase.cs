@@ -44,6 +44,9 @@ namespace RegistryExplorer.ViewModels {
 			set { SetProperty(ref _isSelected, value); }
 		}
 
+		public T GetSubItem<T>(string name) where T : RegistryKeyItemBase {
+			return SubItems.FirstOrDefault(i => i.Text.Equals(name, StringComparison.InvariantCultureIgnoreCase)) as T;
+		}
 
 		public override string ToString() {
 			return _text.ToString();

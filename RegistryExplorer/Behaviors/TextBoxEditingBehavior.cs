@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interactivity;
+using System.Windows.Media;
 using RegistryExplorer.ViewModels;
 
 namespace RegistryExplorer.Behaviors {
@@ -28,30 +29,33 @@ namespace RegistryExplorer.Behaviors {
 			base.OnDetaching();
 		}
 
-		string _originalText;
 		private void AssociatedObject_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			if(AssociatedObject.IsVisible) {
-				_originalText = AssociatedObject.Text;
-				AssociatedObject.Focus();
+				((FrameworkElement)VisualTreeHelper.GetParent(AssociatedObject)).Focus();
 				AssociatedObject.SelectAll();
+				AssociatedObject.Focus();
+				_cancel = false;
 			}
 		}
 
 		private void AssociatedObject_LostFocus(object sender, RoutedEventArgs e) {
-			ExecutendEditCommand();
+			if(AssociatedObject.IsVisible)
+				ExecutEndEditCommand();
 		}
 
-		private void ExecutendEditCommand() {
-			if(EndEditCommand != null && EndEditCommand.CanExecute(null))
-				EndEditCommand.Execute(AssociatedObject.Text);
+		private void ExecutEndEditCommand() {
+			if(EndEditCommand != null && EndEditCommand.CanExecute(AssociatedObject.Text))
+				EndEditCommand.Execute(_cancel ? null : AssociatedObject.Text);
 		}
 
+		bool _cancel;
 		private void AssociatedObject_KeyUp(object sender, KeyEventArgs e) {
 			switch(e.Key) {
 				case Key.Escape:
-					AssociatedObject.Text = _originalText;
+					_cancel = true;
+					//AssociatedObject.Text = _originalText;
 					goto case Key.Enter;
-						
+
 				case Key.Enter:
 					break;
 
@@ -59,7 +63,7 @@ namespace RegistryExplorer.Behaviors {
 					return;
 			}
 			AssociatedObject.MoveFocus(new TraversalRequest(FocusNavigationDirection.Previous));
-	
+
 			e.Handled = true;
 		}
 
