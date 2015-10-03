@@ -6,7 +6,7 @@
              xmlns:conv="clr-namespace:RegistryExplorer.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="500">
     <UserControl.Resources>
         <b:ValueCellTemplateSelector x:Key="ValueCellTemplateSelector">
             <b:ValueCellTemplateSelector.SingleValueDataTemplate>
@@ -23,7 +23,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
     <DockPanel>
-            <Button FontSize="16" FontWeight="Bold" DockPanel.Dock="Right" Margin="2,2,8,2" Padding="2" Command="{Binding ClearFilter}">
+            <Button FontSize="16" DockPanel.Dock="Right" Margin="2,2,8,2" Padding="2" Command="{Binding ClearFilterCommand}" ToolTip="Clear Filter">
                 <Image Source="/images/delete2.png" Stretch="None" />
             </Button>
             <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" Margin="4,2" VerticalAlignment="Center" Padding="2"/>
@@ -65,13 +65,14 @@
                 </DataGridTemplateColumn.CellEditingTemplate>
             </DataGridTemplateColumn>
             <DataGridTextColumn Header="Type" Binding="{Binding DataTypeAsString}" IsReadOnly="True" MinWidth="80" />
-            <DataGridTemplateColumn Header="Value" MinWidth="150" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}" SortMemberPath="ValueAsString">
+            <DataGridTemplateColumn Header="Value" MinWidth="170" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}" SortMemberPath="ValueAsString">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding ValueAsString}" />
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
+            <DataGridTextColumn Header="More Info" CanUserReorder="False" CanUserSort="False" Binding="{Binding MoreInfo}" MinWidth="100" />
         </DataGrid.Columns>
     </DataGrid>
     </Grid>

@@ -114,7 +114,7 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
-		public RegistryKeyItem CreateNewKey(string name) {
+		public RegistryKeyItemBase CreateNewKey(string name) {
 
 			using(var key = _root.CreateSubKey(string.Format("{0}\\{1}", Path, name))) {
 				var newitem = new RegistryKeyItem(this, name);

@@ -25,7 +25,11 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <view:RegistryTreeView FontSize="12" />
-            <view:DataGridView Grid.Column="1" DataContext="{Binding DataGridViewModel}" />
+            <view:DataGridView Grid.Column="1" DataContext="{Binding DataGridViewModel}">
+                <i:Interaction.Behaviors>
+                    <b:ActiveViewBehavior />
+                </i:Interaction.Behaviors>
+            </view:DataGridView>
             <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="DarkBlue" Width="3" Margin="-1,0" />
         </Grid>
         <StatusBar Grid.Row="3">

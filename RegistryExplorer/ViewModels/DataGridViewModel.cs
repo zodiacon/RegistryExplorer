@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace RegistryExplorer.ViewModels {
-	class DataGridViewModel : BindableBase, IDisposable {
+	class DataGridViewModel : ViewModelBase, IDisposable {
 		MainViewModel _mainViewModel;
 		PropertyFollower<MainViewModel, DataGridViewModel> _follower;
- 
+
+		public DelegateCommand ClearFilterCommand { get; }
+
 		public DataGridViewModel(MainViewModel vm) {
 			_mainViewModel = vm;
 
@@ -19,6 +22,8 @@ namespace RegistryExplorer.ViewModels {
 				FilterText = string.Empty;
 				OnPropertyChanged(nameof(Values));
 			});
+
+			ClearFilterCommand = new DelegateCommand(() => FilterText = string.Empty);
 		}
 
 		IEnumerable<RegistryValue> _values;
@@ -38,7 +43,7 @@ namespace RegistryExplorer.ViewModels {
 
 		public string FilterText {
 			get { return _filterText; }
-			set { 
+			set {
 				if(SetProperty(ref _filterText, value)) {
 					if(_values != null && string.IsNullOrEmpty(value)) {
 						CollectionViewSource.GetDefaultView(_values).Filter = null;
@@ -56,6 +61,13 @@ namespace RegistryExplorer.ViewModels {
 
 		public void Dispose() {
 			_follower.Dispose();
+		}
+
+		protected override void OnIsActiveChanged() {
+			base.OnIsActiveChanged();
+
+			if(IsActive)
+				ActiveView = this;
 		}
 	}
 }

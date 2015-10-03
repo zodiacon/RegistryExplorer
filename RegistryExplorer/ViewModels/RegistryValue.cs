@@ -35,6 +35,7 @@ namespace RegistryExplorer.ViewModels {
 			set {
 				if(SetProperty(ref _value, value)) {
 					OnPropertyChanged(() => ValueAsString);
+					OnPropertyChanged(() => MoreInfo);
 				}
 			}
 		}
@@ -77,23 +78,38 @@ namespace RegistryExplorer.ViewModels {
 			
 		}
 
+		public string MoreInfo {
+			get {
+				switch(DataType) {
+					case RegistryValueKind.String:
+					case RegistryValueKind.ExpandString:
+						return string.Format("{0} characters", ((string)Value).Length);
+
+					case RegistryValueKind.MultiString:
+						return string.Format("{0} strings, {1} total characters", ((string[])Value).Length, ((string[])Value).Sum(s => s.Length));
+
+					case RegistryValueKind.Binary:
+						return string.Format("{0} bytes", ((byte[])Value).Length);
+				}
+				return string.Empty;
+			}
+		}
 		private string FormatString(string value) {
 			if(value.Length > 64)
 				value = value.Substring(0, 64) + " ...";
-			return value + string.Format(" ({0} characters)", value.Length);
+			return value;
 		}
 
 		private string FormatMultiString(string[] array) {
 			string result = string.Join(" ", array);
 			if(result.Length > 64)
 				result = result.Substring(0, 64) + "...";
-			result += string.Format(" ({0} strings)", array.Length);
+			
 			return result;
 		}
 		
 		private string FormatBinary(byte[] data) {
-			return string.Join(" ", data.Take(32).Select(n => n.ToString("X2"))) + (data.Length > 32 ? " ..." : string.Empty) 
-				+ string.Format(" ({0} bytes)", data.Length);
+			return string.Join(" ", data.Take(32).Select(n => n.ToString("X2"))) + (data.Length > 32 ? " ..." : string.Empty);
 		}
 	}
 }

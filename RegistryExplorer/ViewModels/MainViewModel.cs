@@ -11,21 +11,24 @@ using Prism.Mvvm;
 using RegistryExplorer.Model;
 
 namespace RegistryExplorer.ViewModels {
-	class MainViewModel : BindableBase {
+	class MainViewModel : ViewModelBase {
 		public readonly IUnityContainer Container = new UnityContainer();
 		public CommandManager CommandManager { get; } = new CommandManager();
 		public Options Options { get; } = new Options();
 
-		public DelegateCommandBase ExitCommand { get; private set; }
-		public DelegateCommandBase LoadHiveCommand { get; private set; }
-		public DelegateCommandBase EditPermissionsCommand { get; private set; }
-		public DelegateCommandBase EditNewKeyCommand { get; private set; }
-		public DelegateCommand<RegistryKeyItem> BeginRenameCommand { get; }
+		public DelegateCommandBase ExitCommand { get; }
+		public DelegateCommandBase LoadHiveCommand { get; }
+		public DelegateCommandBase EditPermissionsCommand { get; }
+		public DelegateCommandBase EditNewKeyCommand { get; }
+		public DelegateCommandBase BeginRenameCommand { get; }
 		public DelegateCommand UndoCommand { get; }
 		public DelegateCommand RedoCommand { get; }
 		public DelegateCommandBase EndEditingCommand { get; }
 
-		public DataGridViewModel DataGridViewModel { get; private set; }
+		public DelegateCommandBase CopyKeyNameCommand { get; }
+		public DelegateCommand CopyKeyPathCommand { get; }
+
+		public DataGridViewModel DataGridViewModel { get; }
 
 		List<RegistryKeyItemBase> _roots;
 
@@ -67,12 +70,10 @@ namespace RegistryExplorer.ViewModels {
 			set {
 				if(SetProperty(ref _selectedItem, value)) {
 					OnPropertyChanged(nameof(CurrentPath));
-					EditPermissionsCommand.RaiseCanExecuteChanged();
 				}
 			}
 		}
 
-		public string UndoDescription { get { return "Cactus"; } }
 
 		public string CurrentPath {
 			get {
@@ -94,13 +95,16 @@ namespace RegistryExplorer.ViewModels {
 			catch {
 			}
 
+			ActiveView = this;
+
 			DataGridViewModel = new DataGridViewModel(this);
 
 			ExitCommand = new DelegateCommand(() => Application.Current.Shutdown());
 
-			EditNewKeyCommand = new DelegateCommand(() => {
-				var item = SelectedItem as RegistryKeyItem;
+			EditNewKeyCommand = new DelegateCommand<RegistryKeyItem>(item => {
+				//var item = SelectedItem as RegistryKeyItem;
 				Debug.Assert(item != null);
+
 				var name = item.GenerateUniqueSubKeyName();
 				CommandManager.AddCommand(Commands.CreateKeyCommand(new CreateKeyCommandContext {
 					Key = item,
@@ -110,7 +114,7 @@ namespace RegistryExplorer.ViewModels {
 				var newItem = item.GetSubItem<RegistryKeyItem>(name);
 				newItem.IsSelected = true;
 				IsEditMode = true;
-			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem)
+			}, item => !IsReadOnlyMode && item is RegistryKeyItem)
 			.ObservesProperty(() => IsReadOnlyMode).ObservesProperty(() => SelectedItem);
 
 			EditPermissionsCommand = new DelegateCommand(() => {
@@ -118,13 +122,21 @@ namespace RegistryExplorer.ViewModels {
 			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem)
 			.ObservesProperty(() => IsReadOnlyMode).ObservesProperty(() => SelectedItem);
 
+			CopyKeyNameCommand = new DelegateCommand<RegistryKeyItemBase>(_ => Clipboard.SetText(SelectedItem.Text),
+				_ => SelectedItem != null).ObservesProperty(() => SelectedItem);
+
+			CopyKeyPathCommand = new DelegateCommand(() => Clipboard.SetText(((RegistryKeyItem)SelectedItem).Path ?? SelectedItem.Text),
+				() => SelectedItem is RegistryKeyItem)
+				.ObservesProperty(() => SelectedItem);
+
 			EndEditingCommand = new DelegateCommand<string>(name => {
 				try {
-					if(name == null)
-						return;
 
 					var item = SelectedItem as RegistryKeyItem;
 					Debug.Assert(item != null);
+					if(name == null || name.Equals(item.Text, StringComparison.InvariantCultureIgnoreCase))
+						return;
+
 					if(item.Parent.SubItems.Any(i => name.Equals(i.Text, StringComparison.InvariantCultureIgnoreCase))) {
 						MessageBox.Show(string.Format("Key name '{0}' already exists", name), App.Name);
 						return;
@@ -134,20 +146,21 @@ namespace RegistryExplorer.ViewModels {
 						OldName = item.Text,
 						NewName = name
 					}));
-					CommandManager.UpdateChanges();
-					UndoCommand.RaiseCanExecuteChanged();
-					RedoCommand.RaiseCanExecuteChanged();
 				}
 				catch(Exception ex) {
 					MessageBox.Show(ex.Message, App.Name);
 				}
 				finally {
 					IsEditMode = false;
+					CommandManager.UpdateChanges();
+					UndoCommand.RaiseCanExecuteChanged();
+					RedoCommand.RaiseCanExecuteChanged();
 				}
 			}, _ => IsEditMode).ObservesCanExecute(_ => IsEditMode);
 
-			BeginRenameCommand = new DelegateCommand<RegistryKeyItem>(item => IsEditMode = true, item => !IsReadOnlyMode && item is RegistryKeyItem && !string.IsNullOrEmpty(item.Path))
-				.ObservesProperty(() => IsReadOnlyMode).ObservesProperty(() => SelectedItem);
+			BeginRenameCommand = new DelegateCommand(() => IsEditMode = true,
+				() => !IsReadOnlyMode && SelectedItem is RegistryKeyItem && !string.IsNullOrEmpty(((RegistryKeyItem)SelectedItem).Path))
+				.ObservesProperty(() => SelectedItem).ObservesProperty(() => IsReadOnlyMode);
 
 			UndoCommand = new DelegateCommand(() => {
 				CommandManager.Undo();

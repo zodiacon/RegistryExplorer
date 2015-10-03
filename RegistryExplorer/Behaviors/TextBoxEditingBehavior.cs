@@ -30,8 +30,7 @@ namespace RegistryExplorer.Behaviors {
 		}
 
 		private void AssociatedObject_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			if(AssociatedObject.IsVisible) {
-				((FrameworkElement)VisualTreeHelper.GetParent(AssociatedObject)).Focus();
+			if((bool)e.NewValue) {
 				AssociatedObject.SelectAll();
 				AssociatedObject.Focus();
 				_cancel = false;

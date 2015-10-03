@@ -17,8 +17,8 @@
                 <Image Source="/images/folder_closed.png" Width="16" Height="16" x:Name="_image" />
                 <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,2,0" x:Name="_t2" />
 
-                <TextBox Text="{Binding Text, Mode=OneWay}" VerticalAlignment="Center" Padding="2" Margin="3,0,0,0" 
-                          MinWidth="50" x:Name="_t1" Visibility="Collapsed">
+                <TextBox Text="{Binding Text, Mode=OneWay}" VerticalAlignment="Center" Padding="1" Margin="3,0,2,0" MaxLength="64"
+                          MinWidth="50" x:Name="_t1" Visibility="Collapsed" BorderThickness="0">
                     <i:Interaction.Behaviors>
                         <b:TextBoxEditingBehavior EndEditCommand="{Binding DataContext.EndEditingCommand, ElementName=This}" />
                     </i:Interaction.Behaviors>
@@ -60,9 +60,9 @@
             </Button>
             <TextBox Text="{Binding FilterText}" Margin="4,2" VerticalAlignment="Center" Padding="2"/>
         </DockPanel>-->
-        <TreeView Grid.Row="1" FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" IsTabStop="True">
+        <TreeView Grid.Row="1" FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" IsTabStop="True" x:Name="_treeView">
             <i:Interaction.Behaviors>
-                <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+                <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem}" />
                 <b:KeyNavigationTreeViewBehavior />
             </i:Interaction.Behaviors>
             <i:Interaction.Triggers>
@@ -92,21 +92,31 @@
                         <Setter.Value>
                             <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" >
                                 <MenuItem Header="New">
-                                    <MenuItem Header="Key" Command="{Binding EditNewKeyCommand}" />
+                                    <MenuItem Header="Key" Command="{Binding EditNewKeyCommand}" CommandParameter="{Binding SelectedItem}" />
                                     <Separator />
-                                    <MenuItem Header="DWORD Value" Command="{Binding EditNewValue}" CommandParameter="DWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
-                                    <MenuItem Header="QWORD Value" Command="{Binding EditNewValue}" CommandParameter="QWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
-                                    <MenuItem Header="String Value" Command="{Binding EditNewValue}" CommandParameter="String" Icon="{ext:Image /images/datatypes/reg_string.png}"/>
-                                    <MenuItem Header="Multi String Value" Command="{Binding EditNewValue}" CommandParameter="MultiString" Icon="{ext:Image /images/datatypes/reg_string.png}" />
-                                    <MenuItem Header="Binary Value" Command="{Binding EditNewValue}" CommandParameter="Binary" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+                                    <MenuItem Header="DWORD Value" Command="{Binding EditNewValueCommand}" CommandParameter="DWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+                                    <MenuItem Header="QWORD Value" Command="{Binding EditNewValueCommand}" CommandParameter="QWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+                                    <MenuItem Header="String Value" Command="{Binding EditNewValueCommand}" CommandParameter="String" Icon="{ext:Image /images/datatypes/reg_string.png}"/>
+                                    <MenuItem Header="Multi String Value" Command="{Binding EditNewValueCommand}" CommandParameter="MultiString" Icon="{ext:Image /images/datatypes/reg_string.png}" />
+                                    <MenuItem Header="Binary Value" Command="{Binding EditNewValueCommand}" CommandParameter="Binary" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
                                 </MenuItem>
                                 <Separator />
-                                <MenuItem Header="Rename" Command="{Binding BeginRenameCommand}" CommandParameter="{Binding}" />
+                                <MenuItem Header="Rename" Command="{Binding BeginRenameCommand}"  />
                                 <Separator />
-                                <MenuItem Header="Permissions..." Command="{Binding EditPermissionsCommand}" CommandParameter="{Binding}" />
+                                <MenuItem Header="Copy Key Name" Command="{Binding CopyKeyNameCommand}" />
+                                <MenuItem Header="Copy Full Key Path" Command="{Binding CopyKeyPathCommand}" />
+                                <Separator />
+                                <MenuItem Header="Export..." Command="{Binding ExportCommand}" />
+                                <Separator />
+                                <MenuItem Header="Permissions..." Command="{Binding EditPermissionsCommand}" CommandParameter="{Binding SelectedItem}" />
                             </ContextMenu>
                         </Setter.Value>
                     </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TypeName}" Value="RegistryKeyItemSpecial">
+                            <Setter Property="ContextMenu" Value="{x:Null}" />
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </TreeView.ItemContainerStyle>
         </TreeView>

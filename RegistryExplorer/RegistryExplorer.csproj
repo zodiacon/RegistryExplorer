@@ -78,6 +78,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\ActiveViewBehavior.cs" />
     <Compile Include="Behaviors\KeyNavigationTreeViewBehavior.cs" />
     <Compile Include="Behaviors\SelectedTreeViewItemBehavior.cs" />
     <Compile Include="Behaviors\TextBoxEditingBehavior.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="AppCommand.cs" />
     <Compile Include="Model\Options.cs" />
     <Compile Include="PropertyFollower.cs" />
+    <Compile Include="ViewModelBase.cs" />
     <Compile Include="ViewModels\DataGridViewModel.cs" />
     <Compile Include="ViewModels\MenuBarViewModel.cs" />
     <Compile Include="ViewModels\RegistryKeyItemBase.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Views\ToolBarView.xaml.cs">
       <DependentUpon>ToolBarView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VisualTreeHelpers.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

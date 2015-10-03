@@ -25,6 +25,10 @@ namespace RegistryExplorer.ViewModels {
 			Parent = parent;
 		}
 
+		public string TypeName {
+			get { return GetType().Name; }
+		}
+
 		public string Text {
 			get { return _text; }
 			set { SetProperty(ref _text, value); }

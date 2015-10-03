@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace RegistryExplorer.Behaviors {
 		}
 
 		void AssociatedObject_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e) {
+			Debug.Assert(e.NewValue is RegistryKeyItemBase);
 			SelectedItem = (RegistryKeyItemBase)e.NewValue;
 		}
 
@@ -33,7 +35,8 @@ namespace RegistryExplorer.Behaviors {
 		}
 
 		public static readonly DependencyProperty SelectedItemProperty =
-			 DependencyProperty.Register("SelectedItem", typeof(RegistryKeyItemBase), typeof(SelectedTreeViewItemBehavior), new PropertyMetadata(null));
+			 DependencyProperty.Register(nameof(SelectedItem), typeof(RegistryKeyItemBase), typeof(SelectedTreeViewItemBehavior), new FrameworkPropertyMetadata(null,
+				 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 		
 	}
 }
