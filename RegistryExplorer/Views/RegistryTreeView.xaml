@@ -13,15 +13,18 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="bool2vis" />
         <HierarchicalDataTemplate DataType="{x:Type vm:RegistryKeyItem}" ItemsSource="{Binding SubItems}" >
-            <StackPanel Orientation="Horizontal" Margin="2,1">
+            <StackPanel Orientation="Horizontal" Margin="2,1" >
                 <Image Source="/images/folder_closed.png" Width="16" Height="16" x:Name="_image" />
                 <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,2,0" x:Name="_t2" />
 
-                <TextBox Text="{Binding Text, Mode=OneWay}" VerticalAlignment="Center" Padding="1" Margin="3,0,2,0" MaxLength="64"
+                <TextBox Text="{Binding Text, Mode=OneWay}" VerticalAlignment="Center" Padding="1" Margin="3,0,2,0" MaxLength="64" 
                           MinWidth="50" x:Name="_t1" Visibility="Collapsed" BorderThickness="0">
                     <i:Interaction.Behaviors>
                         <b:TextBoxEditingBehavior EndEditCommand="{Binding DataContext.EndEditingCommand, ElementName=This}" />
                     </i:Interaction.Behaviors>
+                    <i:Interaction.Triggers>
+                     
+                    </i:Interaction.Triggers>
                 </TextBox>
             </StackPanel>
 
@@ -42,7 +45,7 @@
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type vm:RegistryKeyItemSpecial}" ItemsSource="{Binding SubItems}">
             <StackPanel Orientation="Horizontal">
-                <Image Source="{Binding Icon}" Width="16" Height="16" x:Name="_image" />
+                <Image Source="{Binding Icon}" Width="16" Height="16"  />
                 <TextBlock Text="{Binding Text}" VerticalAlignment="Center" Margin="3,0,0,0" />
             </StackPanel>
         </HierarchicalDataTemplate>
@@ -54,13 +57,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <!--<DockPanel>
-            <Button FontSize="16" FontWeight="Bold" DockPanel.Dock="Right" Margin="2,2,8,2" Padding="2" Command="{Binding ClearFilter}">
-                <Image Source="/images/delete2.png" Stretch="None" />
-            </Button>
-            <TextBox Text="{Binding FilterText}" Margin="4,2" VerticalAlignment="Center" Padding="2"/>
-        </DockPanel>-->
-        <TreeView Grid.Row="1" FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" IsTabStop="True" x:Name="_treeView">
+        <TreeView Grid.Row="1" FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" IsTabStop="True" x:Name="_treeView" FocusManager.IsFocusScope="True">
             <i:Interaction.Behaviors>
                 <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem}" />
                 <b:KeyNavigationTreeViewBehavior />
@@ -77,6 +74,7 @@
             </TreeView.ItemsPanel>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
+                    
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
@@ -90,7 +88,7 @@
                     <Setter Property="Tag" Value="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=TreeView}}" />
                     <Setter Property="ContextMenu">
                         <Setter.Value>
-                            <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" >
+                            <ContextMenu DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"  >
                                 <MenuItem Header="New">
                                     <MenuItem Header="Key" Command="{Binding EditNewKeyCommand}" CommandParameter="{Binding SelectedItem}" />
                                     <Separator />
@@ -107,6 +105,8 @@
                                 <MenuItem Header="Copy Full Key Path" Command="{Binding CopyKeyPathCommand}" />
                                 <Separator />
                                 <MenuItem Header="Export..." Command="{Binding ExportCommand}" />
+                                <Separator />
+                                <MenuItem Header="Delete" Icon="{ext:Image /images/delete2.png}" Command="{Binding ActiveView.DeleteCommand}" />
                                 <Separator />
                                 <MenuItem Header="Permissions..." Command="{Binding EditPermissionsCommand}" CommandParameter="{Binding SelectedItem}" />
                             </ContextMenu>

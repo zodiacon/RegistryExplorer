@@ -11,6 +11,8 @@ namespace RegistryExplorer.ViewModels {
 		private string _text;
 		protected ObservableCollection<RegistryKeyItemBase> _subItems;
 
+		public string Path { get; protected set; }
+
 		public RegistryKeyItemBase Parent { get; private set; }
 
 		public virtual ObservableCollection<RegistryKeyItemBase> SubItems {

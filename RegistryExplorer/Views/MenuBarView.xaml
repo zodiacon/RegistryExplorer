@@ -4,24 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
+             xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Menu Background="WhiteSmoke">
         <Menu.ItemContainerStyle>
             <Style TargetType="MenuItem" >
                 <Setter Property="Background" Value="WhiteSmoke" />
+                <Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />
                 <Style.Triggers>
                 </Style.Triggers>
             </Style>
         </Menu.ItemContainerStyle>
-        <MenuItem Header="_File">
+        <MenuItem Header="_File" Template="{DynamicResource MenuItemTemplate}">
             <MenuItem Header="_Import..." Command="{Binding ImportCommand}" Icon="{ext:Image /images/import.png}" />
             <MenuItem Header="_Export..." Command="{Binding ExportCommand}" Icon="{ext:Image /images/export.png}" />
             <Separator />
             <MenuItem Header="_Load Hive..." Command="{Binding LoadHiveCommand}" Icon="{ext:Image /images/import2.png}" />
             <MenuItem Header="_Unload Hive" Command="{Binding UnloadHiveCommand}" />
             <Separator />
-            <MenuItem Header="Launch with Admin rights" Command="{Binding LaunchWithAdminRightsCommand}" />
+            <MenuItem Header="Launch with Admin rights" Command="{Binding LaunchWithAdminRightsCommand}" >
+                <MenuItem.Icon>
+                    <Image Source="{x:Static vm:MainViewModel.ShieldIcon}" Stretch="None" />
+                </MenuItem.Icon>
+            </MenuItem>
             <Separator />
             <MenuItem Header="E_xit" Command="{Binding ExitCommand}" Icon="{ext:Image /images/exit.png}" />
         </MenuItem>
@@ -39,7 +45,7 @@
                 <MenuItem Header="String Value" Command="{Binding EditNewValue}" CommandParameter="String" Icon="{ext:Image /images/datatypes/reg_string.png}"/>
                 <MenuItem Header="Multi String Value" Command="{Binding EditNewValue}" CommandParameter="MultiString" Icon="{ext:Image /images/datatypes/reg_string.png}" />
                 <MenuItem Header="Binary Value" Command="{Binding EditNewValue}" CommandParameter="Binary" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
-                
+
             </MenuItem>
             <Separator />
             <MenuItem Command="Cut" Icon="{ext:Image /images/cut.png}" />
@@ -47,12 +53,16 @@
             <MenuItem Command="Paste" Icon="{ext:Image /images/paste.png}"/>
             <MenuItem Command="SelectAll" />
             <Separator />
+            <MenuItem Header="_Delete" Icon="{ext:Image /images/delete2.png}" Command="{Binding ActiveView.DeleteCommand}" />
+            <Separator />
             <MenuItem Header="Re_name" InputGestureText="F2" Command="{Binding BeginRenameCommand}" CommandParameter="{Binding SelectedItem}" />
             <Separator />
             <MenuItem Header="_Permissions..." Command="{Binding EditPermissionsCommand}" Icon="{ext:Image /images/shield.png}" />
         </MenuItem>
         <MenuItem Header="_View">
             <MenuItem Header="_Fonts..." />
+            <Separator />
+            <MenuItem Header="_Refresh" InputGestureText="F5" Command="{Binding RefreshCommand}" Icon="{ext:Image /images/refresh.png}" />
         </MenuItem>
         <MenuItem Header="_Search">
             <MenuItem Header="_Find..." InputGestureText="Ctrl+F" Command="{Binding FindCommand}" Icon="{ext:Image /images/find.png}"/>

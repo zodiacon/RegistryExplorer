@@ -16,6 +16,7 @@ namespace RegistryExplorer.Behaviors {
 			base.OnAttached();
 
 			AssociatedObject.SelectedItemChanged += AssociatedObject_SelectedItemChanged;
+
 		}
 
 
@@ -36,7 +37,7 @@ namespace RegistryExplorer.Behaviors {
 
 		public static readonly DependencyProperty SelectedItemProperty =
 			 DependencyProperty.Register(nameof(SelectedItem), typeof(RegistryKeyItemBase), typeof(SelectedTreeViewItemBehavior), new FrameworkPropertyMetadata(null,
-				 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+				 FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsRender));
 		
 	}
 }

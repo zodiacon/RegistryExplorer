@@ -17,14 +17,14 @@ namespace RegistryExplorer.Behaviors {
 		string _searchterm = string.Empty;
 		DateTime _lastSearch = DateTime.Now;
 		DispatcherTimer _timer;
-		
+
 		protected override void OnAttached() {
 			base.OnAttached();
 
 			AssociatedObject.KeyUp += AssociatedObject_KeyUp;
 			AssociatedObject.TextInput += AssociatedObject_TextInput;
 
-			_timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(.5) };
+			_timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(.8) };
 			_timer.Tick += _timer_Tick;
 		}
 
@@ -44,21 +44,18 @@ namespace RegistryExplorer.Behaviors {
 				found.IsSelected = true;
 			}
 			else {
-				NativeMethods.MessageBeep(0x30);	// short beep
+				NativeMethods.MessageBeep(0x30);    // short beep
 			}
 
+			_lastSearch = DateTime.Now;
 			_searchterm = string.Empty;
 		}
 
 		void AssociatedObject_TextInput(object sender, TextCompositionEventArgs e) {
-			_timer.Start();
-			if((DateTime.Now - _lastSearch).Milliseconds < 500) {
-				_searchterm += e.Text;
-				_lastSearch = DateTime.Now;
-				return;
-			}
+			_timer.Stop();
+			_searchterm += e.Text;
 
-			_searchterm = e.Text;
+			_timer.Start();
 		}
 
 		TreeViewItem GetTreeViewItemFromObject(RegistryKeyItemBase item) {
@@ -77,7 +74,7 @@ namespace RegistryExplorer.Behaviors {
 			while(index > 0) {
 				var container = currentTreeView;
 				currentTreeView = currentTreeView.ItemContainerGenerator.ContainerFromIndex(indices[--index]) as TreeViewItem;
-				if(currentTreeView == null) {		// virtualized
+				if(currentTreeView == null) {       // virtualized
 					GetPanelForTreeViewItem(container).BringIntoView(indices[index]);
 					currentTreeView = container.ItemContainerGenerator.ContainerFromIndex(indices[index]) as TreeViewItem;
 				}

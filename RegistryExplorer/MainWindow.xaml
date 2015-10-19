@@ -7,7 +7,7 @@
         xmlns:conv="clr-namespace:RegistryExplorer.Converters"
         xmlns:view="clr-namespace:RegistryExplorer.Views"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="Registry Explorer" MinHeight="350" MinWidth="525">
+        Title="{Binding Title}" MinHeight="350" MinWidth="525">
     <Window.Resources>
     </Window.Resources>
     <Grid>

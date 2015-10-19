@@ -13,7 +13,6 @@ using Prism.Commands;
 namespace RegistryExplorer.ViewModels {
 	class RegistryKeyItem : RegistryKeyItemBase {
 		RegistryKey _root;
-		public string Path { get; private set; }
 
 		public RegistryKeyItem(RegistryKeyItem parent, string text) : base(parent) {
 			_root = parent.Root;
@@ -105,6 +104,11 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
+		public void Refresh() {
+			_subItems = null;
+			OnPropertyChanged(nameof(SubItems));
+		}
+
 		public void SetValueName(string oldname, string newname) {
 			using(var key = TryOpenSubKey(_root, Path)) {
 				if(key == null)
@@ -114,7 +118,7 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
-		public RegistryKeyItemBase CreateNewKey(string name) {
+		public RegistryKeyItem CreateNewKey(string name) {
 
 			using(var key = _root.CreateSubKey(string.Format("{0}\\{1}", Path, name))) {
 				var newitem = new RegistryKeyItem(this, name);

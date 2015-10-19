@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:b="clr-namespace:RegistryExplorer.Behaviors"
              xmlns:conv="clr-namespace:RegistryExplorer.Converters"
+             xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500">
@@ -22,59 +23,72 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-    <DockPanel>
+        <DockPanel>
             <Button FontSize="16" DockPanel.Dock="Right" Margin="2,2,8,2" Padding="2" Command="{Binding ClearFilterCommand}" ToolTip="Clear Filter">
                 <Image Source="/images/delete2.png" Stretch="None" />
             </Button>
             <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" Margin="4,2" VerticalAlignment="Center" Padding="2"/>
         </DockPanel>
-    <DataGrid Grid.Row="1"  VirtualizingPanel.IsVirtualizing="False" ItemsSource="{Binding Values}" 
+        <DataGrid Grid.Row="1"  VirtualizingPanel.IsVirtualizing="False" ItemsSource="{Binding Values}" 
                       AutoGenerateColumns="False" GridLinesVisibility="Horizontal" SelectionUnit="FullRow" SelectionMode="Extended" CanUserReorderColumns="False" 
                       CanUserResizeRows="False" CanUserSortColumns="True" IsReadOnly="{Binding IsReadOnlyMode}" Background="WhiteSmoke">
-        <DataGrid.ColumnHeaderStyle>
-            <Style TargetType="DataGridColumnHeader">
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="HorizontalContentAlignment" Value="Left" />
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="Background" Value="LightBlue" />
-                <Setter Property="Padding" Value="8,2,2,2" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="BorderBrush" Value="Black" />
-            </Style>
-        </DataGrid.ColumnHeaderStyle>
-        <DataGrid.Columns>
-            <DataGridTemplateColumn Header="Name" MinWidth="90" SortMemberPath="Name"  >
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,4,0">
-                            <Image Source="{Binding DataType, Converter={StaticResource dataType2image}}" Width="16" Height="16" />
-                            <TextBlock Text="{Binding Name}" Margin="4,0,0,0" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-                <DataGridTemplateColumn.CellEditingTemplate>
-                    <DataTemplate>
-                        <TextBox Text="{Binding Name}" x:Name="text" />
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding Name}" Value="(Default)">
-                                <Setter Property="IsReadOnly" TargetName="text" Value="True" />
-                                <Setter Property="IsReadOnlyCaretVisible" Value="False" TargetName="text" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellEditingTemplate>
-            </DataGridTemplateColumn>
-            <DataGridTextColumn Header="Type" Binding="{Binding DataTypeAsString}" IsReadOnly="True" MinWidth="80" />
-            <DataGridTemplateColumn Header="Value" MinWidth="170" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}" SortMemberPath="ValueAsString">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding ValueAsString}" />
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-            <DataGridTextColumn Header="More Info" CanUserReorder="False" CanUserSort="False" Binding="{Binding MoreInfo}" MinWidth="100" />
-        </DataGrid.Columns>
-    </DataGrid>
+            <DataGrid.Style>
+                <Style TargetType="DataGrid">
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Rename" Command="{Binding BeginRenameValue}" />
+                                <Separator />
+                                <MenuItem Header="Delete" Icon="{ext:Image /images/delete2.png}" Command="{Binding ActiveView.DeleteCommand}" />
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.Style>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Background" Value="LightBlue" />
+                    <Setter Property="Padding" Value="8,2,2,2" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="BorderBrush" Value="Black" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Name" MinWidth="90" SortMemberPath="Name" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,4,0">
+                                <Image Source="{Binding DataType, Converter={StaticResource dataType2image}}" Width="16" Height="16" />
+                                <TextBlock Text="{Binding Name}" Margin="4,0,0,0" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Name}" x:Name="text" />
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Name}" Value="(Default)">
+                                    <Setter Property="IsReadOnly" TargetName="text" Value="True" />
+                                    <Setter Property="IsReadOnlyCaretVisible" Value="False" TargetName="text" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Type" Binding="{Binding DataTypeAsString}" IsReadOnly="True" MinWidth="80" />
+                <DataGridTemplateColumn Header="Value" MinWidth="170" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}" SortMemberPath="ValueAsString">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ValueAsString}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="More Info" CanUserReorder="False" CanUserSort="False" Binding="{Binding MoreInfo}" MinWidth="100" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 
 </UserControl>

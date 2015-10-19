@@ -39,6 +39,10 @@ namespace RegistryExplorer.ViewModels {
 			get { return _mainViewModel.IsReadOnlyMode; }
 		}
 
+		public void Refresh() {
+			OnPropertyChanged(nameof(Values));
+		}
+
 		private string _filterText;
 
 		public string FilterText {

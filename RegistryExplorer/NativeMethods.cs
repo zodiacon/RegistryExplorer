@@ -20,7 +20,35 @@ namespace RegistryExplorer {
 
 	}
 
+	[Flags]
+	public enum SHGSI : uint {
+		SHGSI_ICONLOCATION = 0,
+		SHGSI_ICON = 0x000000100,
+		SHGSI_SYSICONINDEX = 0x000004000,
+		SHGSI_LINKOVERLAY = 0x000008000,
+		SHGSI_SELECTED = 0x000010000,
+		SHGSI_LARGEICON = 0x000000000,
+		SHGSI_SMALLICON = 0x000000001,
+		SHGSI_SHELLICONSIZE = 0x000000004
+	}
+
+	[StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	public struct SHSTOCKICONINFO {
+		public uint cbSize;
+		public IntPtr hIcon;
+		public int iSysIconIndex;
+		public int iIcon;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+		public string szPath;
+	}
+
 	static class NativeMethods {
+		[DllImport("Shell32", SetLastError = false)]
+		public static extern Int32 SHGetStockIconInfo(int siid, SHGSI uFlags, ref SHSTOCKICONINFO psii);
+
+		[DllImport("user32")]
+		public static extern bool DestroyIcon(IntPtr hIcon);
+
 		[DllImport("advapi32")]
 		public static extern int RegLoadKey(SafeRegistryHandle hKey, string subKey, string file);
 
@@ -29,6 +57,15 @@ namespace RegistryExplorer {
 
 		[DllImport("advapi32")]
 		public static extern int RegRenameKey(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string oldname, [MarshalAs(UnmanagedType.LPWStr)] string newname);
+
+		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint ="RegCopyTreeW")]
+		public static extern int RegCopyTree(SafeRegistryHandle hSourceKey, [MarshalAs(UnmanagedType.LPWStr)] string subKey, SafeRegistryHandle hTarget);
+
+		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint = "RegSaveKeyExW")]
+		public static extern int RegSaveKeyEx(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string filename, IntPtr secDesc, uint format = 1);
+
+		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint = "RegRestoreKey")]
+		public static extern int RegRestoreKey(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string filename, uint flags = 8);
 
 		static Dictionary<string, object> _privileges = new Dictionary<string, object>();
 
@@ -39,7 +76,7 @@ namespace RegistryExplorer {
 				privilege = Activator.CreateInstance(privilegeType, name);
 				_privileges.Add(name, privilege);
 			}
-			privilege.GetType().GetMethod("Enable").Invoke(privilege,null);
+			privilege.GetType().GetMethod("Enable").Invoke(privilege, null);
 		}
 
 	

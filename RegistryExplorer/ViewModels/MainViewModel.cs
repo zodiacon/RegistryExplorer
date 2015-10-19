@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Practices.Unity;
 using Microsoft.Win32;
@@ -11,11 +17,12 @@ using Prism.Mvvm;
 using RegistryExplorer.Model;
 
 namespace RegistryExplorer.ViewModels {
-	class MainViewModel : ViewModelBase {
+	class MainViewModel : ViewModelBase, IDisposable {
 		public readonly IUnityContainer Container = new UnityContainer();
 		public CommandManager CommandManager { get; } = new CommandManager();
 		public Options Options { get; } = new Options();
 
+		public DelegateCommandBase LaunchWithAdminRightsCommand { get; }
 		public DelegateCommandBase ExitCommand { get; }
 		public DelegateCommandBase LoadHiveCommand { get; }
 		public DelegateCommandBase EditPermissionsCommand { get; }
@@ -27,6 +34,7 @@ namespace RegistryExplorer.ViewModels {
 
 		public DelegateCommandBase CopyKeyNameCommand { get; }
 		public DelegateCommand CopyKeyPathCommand { get; }
+		public DelegateCommandBase DeleteCommand { get; }
 
 		public DataGridViewModel DataGridViewModel { get; }
 
@@ -87,10 +95,32 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
+		public bool IsAdmin { get; private set; }
+
+		public string Title => "Registry Explorer" + (IsAdmin ? " (Admin Privileges)" : string.Empty);
+
+		static ImageSource _shieldIcon;
+		public static ImageSource ShieldIcon {
+			get {
+				if(_shieldIcon == null) {
+					var sii = new SHSTOCKICONINFO();
+					sii.cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO));
+
+					NativeMethods.SHGetStockIconInfo(77, SHGSI.SHGSI_ICON | SHGSI.SHGSI_SMALLICON, ref sii);
+
+					_shieldIcon = Imaging.CreateBitmapSourceFromHIcon(sii.hIcon, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+
+					NativeMethods.DestroyIcon(sii.hIcon);
+				}
+				return _shieldIcon;
+			}
+		}
+
 		public MainViewModel() {
 			try {
-				NativeMethods.EnablePrivilege("SeRestorePrivilege");
 				NativeMethods.EnablePrivilege("SeBackupPrivilege");
+				NativeMethods.EnablePrivilege("SeRestorePrivilege");
+				IsAdmin = true;
 			}
 			catch {
 			}
@@ -101,26 +131,35 @@ namespace RegistryExplorer.ViewModels {
 
 			ExitCommand = new DelegateCommand(() => Application.Current.Shutdown());
 
-			EditNewKeyCommand = new DelegateCommand<RegistryKeyItem>(item => {
-				//var item = SelectedItem as RegistryKeyItem;
-				Debug.Assert(item != null);
+			LaunchWithAdminRightsCommand = new DelegateCommand(() => {
+				var pi = new ProcessStartInfo(Process.GetCurrentProcess().MainModule.FileName) { Verb = "RunAs" };
+				try {
+					if(Process.Start(pi) != null) {
+						Environment.Exit(0);
+					}
+				}
+				catch(Exception ex) {
+					MessageBox.Show(ex.Message, App.Name);
+				}
+			}, () => !IsAdmin);
 
+			EditNewKeyCommand = new DelegateCommand<RegistryKeyItem>(item => {
 				var name = item.GenerateUniqueSubKeyName();
-				CommandManager.AddCommand(Commands.CreateKeyCommand(new CreateKeyCommandContext {
+				CommandManager.AddCommand(Commands.CreateKey(new CreateKeyCommandContext {
 					Key = item,
 					Name = name
 				}));
 				item.IsExpanded = true;
 				var newItem = item.GetSubItem<RegistryKeyItem>(name);
 				newItem.IsSelected = true;
-				IsEditMode = true;
+				Dispatcher.CurrentDispatcher.InvokeAsync(() => IsEditMode = true, DispatcherPriority.Background);
 			}, item => !IsReadOnlyMode && item is RegistryKeyItem)
-			.ObservesProperty(() => IsReadOnlyMode).ObservesProperty(() => SelectedItem);
+			.ObservesProperty(() => IsReadOnlyMode);
 
 			EditPermissionsCommand = new DelegateCommand(() => {
 				// TODO
-			}, () => !IsReadOnlyMode && SelectedItem != null && SelectedItem is RegistryKeyItem)
-			.ObservesProperty(() => IsReadOnlyMode).ObservesProperty(() => SelectedItem);
+			}, () => SelectedItem is RegistryKeyItem)
+			.ObservesProperty(() => SelectedItem);
 
 			CopyKeyNameCommand = new DelegateCommand<RegistryKeyItemBase>(_ => Clipboard.SetText(SelectedItem.Text),
 				_ => SelectedItem != null).ObservesProperty(() => SelectedItem);
@@ -141,7 +180,7 @@ namespace RegistryExplorer.ViewModels {
 						MessageBox.Show(string.Format("Key name '{0}' already exists", name), App.Name);
 						return;
 					}
-					CommandManager.AddCommand(Commands.RenameKeyCommand(new RenameKeyContext {
+					CommandManager.AddCommand(Commands.RenameKey(new RenameKeyCommandContext {
 						Key = item,
 						OldName = item.Text,
 						NewName = name
@@ -189,6 +228,24 @@ namespace RegistryExplorer.ViewModels {
 					}
 				}
 			});
+
+			DeleteCommand = new DelegateCommand(() => {
+				var item = SelectedItem as RegistryKeyItem;
+				Debug.Assert(item != null);
+
+				if(!IsAdmin) {
+					if(MessageBox.Show("Running with standard user rights prevents undo for deletion. Delete anyway?", 
+						App.Name, MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) == MessageBoxResult.Cancel)
+						return;
+				}
+				var tempFile = Path.GetTempFileName();
+				CommandManager.AddCommand(Commands.DeleteKey(new DeleteKeyCommandContext {
+					Key = item, TempFile = tempFile
+				})); 
+			}, () => !IsReadOnlyMode && SelectedItem is RegistryKeyItem && SelectedItem.Path != null).ObservesProperty(() => IsReadOnlyMode);
+		}
+
+		public void Dispose() {
 		}
 
 		private bool _isReadOnlyMode = true;
