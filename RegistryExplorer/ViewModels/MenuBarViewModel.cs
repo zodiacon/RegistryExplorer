@@ -13,7 +13,7 @@ namespace RegistryExplorer.ViewModels {
 
 		public MenuBarViewModel(MainViewModel vm) {
 			_mainViewModel = vm;
-			_follower = new PropertyFollower<MainViewModel, MenuBarViewModel>(vm, this, nameof(MainViewModel.IsReadOnlyMode));
+			_follower = PropertyFollowerFactory.Create(vm, this, nameof(MainViewModel.IsReadOnlyMode));
 		}
 
 		public DelegateCommandBase ExitCommand {

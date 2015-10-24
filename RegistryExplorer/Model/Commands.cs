@@ -28,7 +28,7 @@ namespace RegistryExplorer.Model {
 			return new AppCommand<RenameKeyCommandContext>(context, ctx => {
 				var parent = ctx.Key.Parent as RegistryKeyItem;
 				Debug.Assert(parent != null);
-				using(var key = parent.Root.OpenSubKey(parent.Path, true)) {
+				using(var key = parent.Root.OpenSubKey(parent.Path ?? string.Empty, true)) {
 					int error = NativeMethods.RegRenameKey(key.Handle, ctx.OldName, ctx.NewName);
 					if(error != 0)
 						throw new Win32Exception(error);

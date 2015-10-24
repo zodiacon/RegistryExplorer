@@ -8,6 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace RegistryExplorer {
+	static class PropertyFollowerFactory {
+		public static PropertyFollower<TSource, TTarget> Create<TSource, TTarget>(TSource source, TTarget target, params string[] propertyNames)
+					where TSource : INotifyPropertyChanged
+					where TTarget : INotifyPropertyChanged {
+			return new PropertyFollower<TSource, TTarget>(source, target, propertyNames);
+		}
+	}
+
 	class PropertyFollower<TSource, TTarget> : IDisposable
 		where TSource : INotifyPropertyChanged
 		where TTarget : INotifyPropertyChanged {

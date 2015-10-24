@@ -33,7 +33,7 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommandBase EndEditingCommand { get; }
 
 		public DelegateCommandBase CopyKeyNameCommand { get; }
-		public DelegateCommand CopyKeyPathCommand { get; }
+		public DelegateCommandBase CopyKeyPathCommand { get; }
 		public DelegateCommandBase DeleteCommand { get; }
 
 		public DataGridViewModel DataGridViewModel { get; }

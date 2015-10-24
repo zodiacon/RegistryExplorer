@@ -52,8 +52,7 @@ namespace RegistryExplorer.Behaviors {
 			switch(e.Key) {
 				case Key.Escape:
 					_cancel = true;
-					//AssociatedObject.Text = _originalText;
-					goto case Key.Enter;
+					break;
 
 				case Key.Enter:
 					break;
@@ -61,9 +60,8 @@ namespace RegistryExplorer.Behaviors {
 				default:
 					return;
 			}
-			AssociatedObject.MoveFocus(new TraversalRequest(FocusNavigationDirection.Previous));
-
 			e.Handled = true;
+			ExecutEndEditCommand();
 		}
 
 		public ICommand EndEditCommand {
