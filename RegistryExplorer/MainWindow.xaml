@@ -1,13 +1,15 @@
-﻿<Window x:Class="RegistryExplorer.MainWindow"
+﻿<metro:MetroWindow x:Class="RegistryExplorer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
         xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
         xmlns:b="clr-namespace:RegistryExplorer.Behaviors"
         xmlns:conv="clr-namespace:RegistryExplorer.Converters"
-        xmlns:view="clr-namespace:RegistryExplorer.Views"
+        xmlns:view="clr-namespace:RegistryExplorer.Views" 
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="{Binding Title}" MinHeight="350" MinWidth="525">
+        Title="{Binding Title}" MinHeight="350" MinWidth="525"
+        TitleCaps="False" BorderThickness="1" BorderBrush="Blue">
     <Window.Resources>
     </Window.Resources>
     <Grid>
@@ -36,4 +38,4 @@
             <TextBlock Text="{Binding CurrentPath}" />
         </StatusBar>
     </Grid>
-</Window>
+</metro:MetroWindow>

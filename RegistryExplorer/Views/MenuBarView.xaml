@@ -6,17 +6,18 @@
              xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
              xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Menu Background="WhiteSmoke">
+             d:DesignHeight="300" d:DesignWidth="300"
+             >
+    <Menu Background="WhiteSmoke" Padding="4">
         <Menu.ItemContainerStyle>
             <Style TargetType="MenuItem" >
                 <Setter Property="Background" Value="WhiteSmoke" />
-                <Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />
+                <!--<Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />-->
                 <Style.Triggers>
                 </Style.Triggers>
             </Style>
         </Menu.ItemContainerStyle>
-        <MenuItem Header="_File" Template="{DynamicResource MenuItemTemplate}">
+        <MenuItem Header="_File" >
             <MenuItem Header="_Import..." Command="{Binding ImportCommand}" Icon="{ext:Image /images/import.png}" />
             <MenuItem Header="_Export..." Command="{Binding ExportCommand}" Icon="{ext:Image /images/export.png}" />
             <Separator />
