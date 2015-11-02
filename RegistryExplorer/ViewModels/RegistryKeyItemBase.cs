@@ -5,13 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Prism.Mvvm;
+using System.Diagnostics;
+using System.Windows;
 
 namespace RegistryExplorer.ViewModels {
 	abstract class RegistryKeyItemBase : BindableBase {
 		private string _text;
 		protected ObservableCollection<RegistryKeyItemBase> _subItems;
 
-		public string Path { get; protected set; }
+		public string Path { get; protected set; } 
 
 		public RegistryKeyItemBase Parent { get; private set; }
 
@@ -23,13 +25,15 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
+		protected string GetSearchTerm() {
+			return "Windows";
+		}
+
 		protected RegistryKeyItemBase(RegistryKeyItemBase parent) {
 			Parent = parent;
 		}
 
-		public string TypeName {
-			get { return GetType().Name; }
-		}
+		public string TypeName => GetType().Name;
 
 		public string Text {
 			get { return _text; }

@@ -80,7 +80,7 @@ namespace RegistryExplorer.ViewModels {
 
 		public RegistryValue[] Values {
 			get {
-				if(Path == null)
+				if(string.IsNullOrEmpty(Path))
 					return null;
 
 				using(var key = TryOpenSubKey(_root, Path)) {

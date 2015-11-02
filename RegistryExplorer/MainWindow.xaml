@@ -9,7 +9,7 @@
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         Title="{Binding Title}" MinHeight="350" MinWidth="525"
-        TitleCaps="False" BorderThickness="1" BorderBrush="Blue">
+        TitleCaps="False" BorderThickness="1" BorderBrush="Blue" Icon="/Images/registry.ico">
     <Window.Resources>
     </Window.Resources>
     <Grid>

@@ -58,7 +58,7 @@
             </StackPanel>
         </Button>
         <Separator />
-        <Menu VerticalAlignment="Center" MinWidth="60">
+        <Menu VerticalAlignment="Center" MinWidth="60" Background="WhiteSmoke">
             <Menu.ItemContainerStyle>
                 <Style TargetType="MenuItem">
                     <Setter Property="Background" Value="WhiteSmoke" />

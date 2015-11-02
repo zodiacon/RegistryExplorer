@@ -27,7 +27,7 @@
             <Button FontSize="16" DockPanel.Dock="Right" Margin="2,2,8,2" Padding="2" Command="{Binding ClearFilterCommand}" ToolTip="Clear Filter">
                 <Image Source="/images/delete2.png" Stretch="None" />
             </Button>
-            <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" Margin="4,2" VerticalAlignment="Center" Padding="2"/>
+            <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged, Delay=300}" Margin="4,2" VerticalAlignment="Center" Padding="2"/>
         </DockPanel>
         <DataGrid Grid.Row="1"  VirtualizingPanel.IsVirtualizing="False" ItemsSource="{Binding Values}" 
                       AutoGenerateColumns="False" GridLinesVisibility="Horizontal" SelectionUnit="FullRow" SelectionMode="Extended" CanUserReorderColumns="False" 
@@ -78,15 +78,27 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Type" Binding="{Binding DataTypeAsString}" IsReadOnly="True" MinWidth="80" />
-                <DataGridTemplateColumn Header="Value" MinWidth="170" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}" SortMemberPath="ValueAsString">
+                <DataGridTemplateColumn MinWidth="80" IsReadOnly="True" Header="Type">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding ValueAsString}" />
+                            <TextBlock Text="{Binding DataTypeAsString}" VerticalAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="More Info" CanUserReorder="False" CanUserSort="False" Binding="{Binding MoreInfo}" MinWidth="100" />
+                <DataGridTemplateColumn Header="Value" MinWidth="170" CellEditingTemplateSelector="{StaticResource ValueCellTemplateSelector}" SortMemberPath="ValueAsString">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ValueAsString}" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn MinWidth="150" IsReadOnly="True" Header="More Info" CanUserSort="False">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding MoreInfo}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

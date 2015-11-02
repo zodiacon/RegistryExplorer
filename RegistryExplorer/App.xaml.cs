@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using RegistryExplorer.ViewModels;
+using MahApps.Metro;
 
 namespace RegistryExplorer {
 	/// <summary>
@@ -18,6 +19,8 @@ namespace RegistryExplorer {
 
 		protected override void OnStartup(StartupEventArgs e) {
 			base.OnStartup(e);
+
+			ThemeManager.ChangeAppTheme(this, "Red");
 
 			var win = new MainWindow();
 			win.DataContext = MainViewModel;

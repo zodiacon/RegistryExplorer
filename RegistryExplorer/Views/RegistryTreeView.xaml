@@ -59,7 +59,7 @@
         </Grid.RowDefinitions>
         <TreeView Grid.Row="1" FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" IsTabStop="True" x:Name="_treeView" FocusManager.IsFocusScope="True">
             <i:Interaction.Behaviors>
-                <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem}" />
+                <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay, Delay=400}" />
                 <b:KeyNavigationTreeViewBehavior />
             </i:Interaction.Behaviors>
             <i:Interaction.Triggers>
@@ -75,8 +75,9 @@
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
                     
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, Delay=200}" />
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, Delay=200}" />
+                    <!--<Setter Property="Visibility" Value="{Binding Visibility}" />-->
                     <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
                     <Setter Property="ItemsPanel">
                         <Setter.Value>

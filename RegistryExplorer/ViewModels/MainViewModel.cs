@@ -15,6 +15,7 @@ using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
 using RegistryExplorer.Model;
+using System.Windows.Data;
 
 namespace RegistryExplorer.ViewModels {
 	class MainViewModel : ViewModelBase, IDisposable {
@@ -234,14 +235,15 @@ namespace RegistryExplorer.ViewModels {
 				Debug.Assert(item != null);
 
 				if(!IsAdmin) {
-					if(MessageBox.Show("Running with standard user rights prevents undo for deletion. Delete anyway?", 
+					if(MessageBox.Show("Running with standard user rights prevents undo for deletion. Delete anyway?",
 						App.Name, MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) == MessageBoxResult.Cancel)
 						return;
 				}
 				var tempFile = Path.GetTempFileName();
 				CommandManager.AddCommand(Commands.DeleteKey(new DeleteKeyCommandContext {
-					Key = item, TempFile = tempFile
-				})); 
+					Key = item,
+					TempFile = tempFile
+				}));
 			}, () => !IsReadOnlyMode && SelectedItem is RegistryKeyItem && SelectedItem.Path != null).ObservesProperty(() => IsReadOnlyMode);
 		}
 
