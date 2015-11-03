@@ -5,23 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 using Prism.Commands;
 using Prism.Mvvm;
+using MahApps.Metro;
+using System.Windows;
 
 namespace RegistryExplorer.ViewModels {
 	class MenuBarViewModel : BindableBase, IDisposable {
-		MainViewModel _mainViewModel;
+		public MainViewModel MainViewModel { get; }
 		PropertyFollower<MainViewModel, MenuBarViewModel> _follower;
 
-		public MenuBarViewModel(MainViewModel vm) {
-			_mainViewModel = vm;
-			_follower = PropertyFollowerFactory.Create(vm, this, nameof(MainViewModel.IsReadOnlyMode));
+		public MenuBarViewModel() {
+			MainViewModel = App.MainViewModel;
+			_follower = PropertyFollowerFactory.Create(MainViewModel, this, nameof(ViewModels.MainViewModel.IsReadOnlyMode));
+
+			ChangeAccentCommand = new DelegateCommand<AccentViewModel>(accent => {
+				ThemeManager.ChangeAppStyle(Application.Current, accent.Accent, ThemeManager.DetectAppStyle().Item1);
+			});
+
 		}
 
 		public DelegateCommandBase ExitCommand {
-			get { return _mainViewModel.ExitCommand; }
+			get { return MainViewModel.ExitCommand; }
 		}
 
 		public void Dispose() {
 			_follower.Dispose();
 		}
+
+		public DelegateCommandBase ChangeAccentCommand { get; }
+
+		public IEnumerable<AccentViewModel> Accents => ThemeManager.Accents.Select(accent => new AccentViewModel(accent)).ToArray();
+
 	}
 }

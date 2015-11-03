@@ -1,80 +1,98 @@
-﻿<UserControl x:Class="RegistryExplorer.Views.MenuBarView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
-             xmlns:vm="clr-namespace:RegistryExplorer.ViewModels"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
-             >
-    <Menu Background="WhiteSmoke" Padding="4" FontSize="14">
-        <Menu.ItemContainerStyle>
-            <Style TargetType="MenuItem" >
-                <Setter Property="Background" Value="WhiteSmoke" />
-                <!--<Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />-->
-                <Style.Triggers>
-                </Style.Triggers>
-            </Style>
-        </Menu.ItemContainerStyle>
-        <MenuItem Header="_File" >
-            <MenuItem Header="_Import..." Command="{Binding ImportCommand}" Icon="{ext:Image /images/import.png}" />
-            <MenuItem Header="_Export..." Command="{Binding ExportCommand}" Icon="{ext:Image /images/export.png}" />
-            <Separator />
-            <MenuItem Header="_Load Hive..." Command="{Binding LoadHiveCommand}" Icon="{ext:Image /images/import2.png}" />
-            <MenuItem Header="_Unload Hive" Command="{Binding UnloadHiveCommand}" />
-            <Separator />
-            <MenuItem Header="Launch with Admin rights" Command="{Binding LaunchWithAdminRightsCommand}" >
-                <MenuItem.Icon>
-                    <Image Source="{x:Static vm:MainViewModel.ShieldIcon}" Stretch="None" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <Separator />
-            <MenuItem Header="E_xit" Command="{Binding ExitCommand}" Icon="{ext:Image /images/exit.png}" />
-        </MenuItem>
-        <MenuItem Header="_Edit">
-            <MenuItem InputGestureText="Ctrl+Z" Command="{Binding UndoCommand}" Icon="{ext:Image /images/undo.png}" HeaderStringFormat="Undo {0}" Header="{Binding CommandManager.UndoDescription}" />
-            <MenuItem InputGestureText="Ctrl+Y" Command="{Binding RedoCommand}" Icon="{ext:Image /images/redo.png}" HeaderStringFormat="Redo {0}" Header="{Binding CommandManager.RedoDescription}" />
-            <Separator />
-            <MenuItem Header="_Read Only Mode" IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" IsCheckable="True" />
-            <Separator />
-            <MenuItem Header="_New">
-                <MenuItem Header="Key" Command="{Binding EditNewKeyCommand}" />
-                <Separator />
-                <MenuItem Header="DWORD Value" Command="{Binding EditNewValue}" CommandParameter="DWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
-                <MenuItem Header="QWORD Value" Command="{Binding EditNewValue}" CommandParameter="QWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
-                <MenuItem Header="String Value" Command="{Binding EditNewValue}" CommandParameter="String" Icon="{ext:Image /images/datatypes/reg_string.png}"/>
-                <MenuItem Header="Multi String Value" Command="{Binding EditNewValue}" CommandParameter="MultiString" Icon="{ext:Image /images/datatypes/reg_string.png}" />
-                <MenuItem Header="Binary Value" Command="{Binding EditNewValue}" CommandParameter="Binary" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+﻿<UserControl x:Class="RegistryExplorer.Views.MenuBarView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+				 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+				 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
+				 xmlns:prism="http://prismlibrary.com/"
+				 xmlns:vm="clr-namespace:RegistryExplorer.ViewModels" mc:Ignorable="d" d:DesignHeight="30" d:DesignWidth="300"
+				 prism:ViewModelLocator.AutoWireViewModel="True" x:Name="This"
+				 >
+	<Menu Background="WhiteSmoke" Padding="4" FontSize="14">
+		<Menu.ItemContainerStyle>
+			<Style TargetType="MenuItem">
+				<Setter Property="Background" Value="WhiteSmoke" />
+				<!--<Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />-->
+				<Style.Triggers>
+				</Style.Triggers>
+			</Style>
+		</Menu.ItemContainerStyle>
+		<MenuItem Header="_File" DataContext="{Binding MainViewModel}">
+			<MenuItem Header="_Import..." Command="{Binding ImportCommand}" Icon="{ext:Image /images/import.png}" />
+			<MenuItem Header="_Export..." Command="{Binding ExportCommand}" Icon="{ext:Image /images/export.png}" />
+			<Separator />
+			<MenuItem Header="_Load Hive Into" Icon="{ext:Image /images/import2.png}">
+				<MenuItem Header="HKEY_LOCAL_MACHINE" Command="{Binding LoadHiveCommand}" CommandParameter="HKLM" />
+				<MenuItem Header="HKEY_USERS" Command="{Binding LoadHiveCommand}" CommandParameter="HKU" />
+			</MenuItem>
+			<MenuItem Header="_Unload Hive" Command="{Binding UnloadHiveCommand}" />
+			<Separator />
+			<MenuItem Header="Launch with Admin rights" Command="{Binding LaunchWithAdminRightsCommand}">
+				<MenuItem.Icon>
+					<Image Source="{x:Static vm:MainViewModel.ShieldIcon}" Stretch="None" />
+				</MenuItem.Icon>
+			</MenuItem>
+			<Separator />
+			<MenuItem Header="E_xit" Command="{Binding ExitCommand}" Icon="{ext:Image /images/exit.png}" />
+		</MenuItem>
+		<MenuItem Header="_Edit" DataContext="{Binding MainViewModel}">
+			<MenuItem InputGestureText="Ctrl+Z" Command="{Binding UndoCommand}" Icon="{ext:Image /images/undo.png}" HeaderStringFormat="Undo {0}" Header="{Binding CommandManager.UndoDescription}" />
+			<MenuItem InputGestureText="Ctrl+Y" Command="{Binding RedoCommand}" Icon="{ext:Image /images/redo.png}" HeaderStringFormat="Redo {0}" Header="{Binding CommandManager.RedoDescription}" />
+			<Separator />
+			<MenuItem Header="_Read Only Mode" IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" IsCheckable="True" />
+			<Separator />
+			<MenuItem Header="_New">
+				<MenuItem Header="Key" Command="{Binding EditNewKeyCommand}" />
+				<Separator />
+				<MenuItem Header="DWORD Value" Command="{Binding EditNewValue}" CommandParameter="DWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+				<MenuItem Header="QWORD Value" Command="{Binding EditNewValue}" CommandParameter="QWORD" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
+				<MenuItem Header="String Value" Command="{Binding EditNewValue}" CommandParameter="String" Icon="{ext:Image /images/datatypes/reg_string.png}" />
+				<MenuItem Header="Multi String Value" Command="{Binding EditNewValue}" CommandParameter="MultiString" Icon="{ext:Image /images/datatypes/reg_string.png}" />
+				<MenuItem Header="Binary Value" Command="{Binding EditNewValue}" CommandParameter="Binary" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
 
-            </MenuItem>
-            <Separator />
-            <MenuItem Command="Cut" Icon="{ext:Image /images/cut.png}" />
-            <MenuItem Command="Copy" Icon="{ext:Image /images/copy.png}" />
-            <MenuItem Command="Paste" Icon="{ext:Image /images/paste.png}"/>
-            <MenuItem Command="SelectAll" />
-            <Separator />
-            <MenuItem Header="_Delete" Icon="{ext:Image /images/delete2.png}" Command="{Binding ActiveView.DeleteCommand}" />
-            <Separator />
-            <MenuItem Header="Re_name" InputGestureText="F2" Command="{Binding BeginRenameCommand}" CommandParameter="{Binding SelectedItem}" />
-            <Separator />
-            <MenuItem Header="_Permissions..." Command="{Binding EditPermissionsCommand}" Icon="{ext:Image /images/shield.png}" />
-        </MenuItem>
-        <MenuItem Header="_View">
-            <MenuItem Header="_Fonts..." />
-            <Separator />
-            <MenuItem Header="_Refresh" InputGestureText="F5" Command="{Binding RefreshCommand}" Icon="{ext:Image /images/refresh.png}" />
-        </MenuItem>
-        <MenuItem Header="_Search">
-            <MenuItem Header="_Find..." InputGestureText="Ctrl+F" Command="{Binding FindCommand}" Icon="{ext:Image /images/find.png}"/>
-        </MenuItem>
-        <MenuItem Header="_Options">
-            <MenuItem Header="Always On Top" IsCheckable="True" IsChecked="{Binding Options.AlwaysOnTop, Mode=TwoWay}" />
-            <MenuItem Header="_Save Settings on Exit" IsCheckable="True" IsChecked="{Binding SaveSettingsOnExit, Mode=TwoWay}" />
-        </MenuItem>
-        <MenuItem Header="_Help">
-            <MenuItem Header="_About Registry Explorer..." Command="{Binding AboutCommand}" />
-        </MenuItem>
-    </Menu>
+			</MenuItem>
+			<Separator />
+			<MenuItem Command="Cut" Icon="{ext:Image /images/cut.png}" />
+			<MenuItem Command="Copy" Icon="{ext:Image /images/copy.png}" />
+			<MenuItem Command="Paste" Icon="{ext:Image /images/paste.png}" />
+			<MenuItem Command="SelectAll" />
+			<Separator />
+			<MenuItem Header="_Delete" Icon="{ext:Image /images/delete2.png}" Command="{Binding ActiveView.DeleteCommand}" />
+			<Separator />
+			<MenuItem Header="Re_name" InputGestureText="F2" Command="{Binding BeginRenameCommand}" CommandParameter="{Binding SelectedItem}" />
+			<Separator />
+			<MenuItem Header="_Permissions..." Command="{Binding EditPermissionsCommand}" Icon="{ext:Image /images/shield.png}" />
+		</MenuItem>
+		<MenuItem Header="_View">
+			<MenuItem Header="_Fonts..." />
+			<Separator />
+			<MenuItem Header="_Refresh" InputGestureText="F5" Command="{Binding RefreshCommand}" Icon="{ext:Image /images/refresh.png}" />
+		</MenuItem>
+		<MenuItem Header="_Search">
+			<MenuItem Header="_Find..." InputGestureText="Ctrl+F" Command="{Binding FindCommand}" Icon="{ext:Image /images/find.png}" />
+		</MenuItem>
+		<MenuItem Header="_Options">
+			<MenuItem Header="Always On Top" IsCheckable="True" IsChecked="{Binding MainViewModel.Options.AlwaysOnTop, Mode=TwoWay}" />
+			<MenuItem Header="_Save Settings on Exit" IsCheckable="True" IsChecked="{Binding SaveSettingsOnExit, Mode=TwoWay}" />
+			<Separator />
+			<MenuItem Header="Accent Color" ItemsSource="{Binding Accents}">
+				<MenuItem.ItemContainerStyle>
+					<Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
+						<Setter Property="Command" Value="{Binding DataContext.ChangeAccentCommand, ElementName=This}" />
+						<Setter Property="CommandParameter" Value="{Binding}" />
+					</Style>
+				</MenuItem.ItemContainerStyle>
+				<MenuItem.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal">
+							<Ellipse Fill="{Binding Color}" Width="20" Height="20" />
+							<TextBlock Margin="6,0,0,0" VerticalAlignment="Center" Text="{Binding Name}" />
+						</StackPanel>
+					</DataTemplate>
+				</MenuItem.ItemTemplate>
+			</MenuItem>
+
+		</MenuItem>
+		<MenuItem Header="_Help">
+			<MenuItem Header="_About Registry Explorer..." Command="{Binding AboutCommand}" />
+		</MenuItem>
+	</Menu>
 
 </UserControl>

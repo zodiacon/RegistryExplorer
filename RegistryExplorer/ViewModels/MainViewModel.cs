@@ -32,12 +32,10 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommand UndoCommand { get; }
 		public DelegateCommand RedoCommand { get; }
 		public DelegateCommandBase EndEditingCommand { get; }
-
+		public DelegateCommandBase ExportCommand { get; }
 		public DelegateCommandBase CopyKeyNameCommand { get; }
 		public DelegateCommandBase CopyKeyPathCommand { get; }
 		public DelegateCommandBase DeleteCommand { get; }
-
-		public DataGridViewModel DataGridViewModel { get; }
 
 		List<RegistryKeyItemBase> _roots;
 
@@ -127,8 +125,6 @@ namespace RegistryExplorer.ViewModels {
 			}
 
 			ActiveView = this;
-
-			DataGridViewModel = new DataGridViewModel(this);
 
 			ExitCommand = new DelegateCommand(() => Application.Current.Shutdown());
 
@@ -245,6 +241,24 @@ namespace RegistryExplorer.ViewModels {
 					TempFile = tempFile
 				}));
 			}, () => !IsReadOnlyMode && SelectedItem is RegistryKeyItem && SelectedItem.Path != null).ObservesProperty(() => IsReadOnlyMode);
+
+			ExportCommand = new DelegateCommand(() => {
+				var dlg = new SaveFileDialog {
+					Title = "Select output file",
+					Filter = "Registry files|*.reg",
+					OverwritePrompt = true
+				};
+				if(dlg.ShowDialog() == true) {
+					var item = SelectedItem as RegistryKeyItem;
+					Debug.Assert(item != null);
+					using(var key = item.Root.OpenSubKey(item.Path)) {
+						File.Delete(dlg.FileName);
+						int error = NativeMethods.RegSaveKeyEx(key.Handle, dlg.FileName, IntPtr.Zero, 2);
+						Debug.Assert(error == 0);
+					}
+				}
+			}, () => IsAdmin && SelectedItem is RegistryKeyItem)
+			.ObservesProperty(() => SelectedItem);
 		}
 
 		public void Dispose() {

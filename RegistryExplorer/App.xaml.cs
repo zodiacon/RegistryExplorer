@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using RegistryExplorer.ViewModels;
 using MahApps.Metro;
+using Prism.Mvvm;
 
 namespace RegistryExplorer {
 	/// <summary>
@@ -17,10 +18,11 @@ namespace RegistryExplorer {
 
 		internal static readonly MainViewModel MainViewModel = new MainViewModel();
 
+		public App() {
+			ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver(view => Type.GetType(view.FullName.Replace("View", "ViewModel")));
+		}
 		protected override void OnStartup(StartupEventArgs e) {
 			base.OnStartup(e);
-
-			ThemeManager.ChangeAppTheme(this, "Red");
 
 			var win = new MainWindow();
 			win.DataContext = MainViewModel;

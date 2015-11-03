@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             <view:RegistryTreeView FontSize="12" />
-            <view:DataGridView Grid.Column="1" DataContext="{Binding DataGridViewModel}">
+            <view:DataGridView Grid.Column="1" >
                 <i:Interaction.Behaviors>
                     <b:ActiveViewBehavior />
                 </i:Interaction.Behaviors>

@@ -9,15 +9,15 @@ using Prism.Mvvm;
 
 namespace RegistryExplorer.ViewModels {
 	class DataGridViewModel : ViewModelBase, IDisposable {
-		MainViewModel _mainViewModel;
+		public MainViewModel MainViewModel { get; }
 		PropertyFollower<MainViewModel, DataGridViewModel> _follower;
 
 		public DelegateCommand ClearFilterCommand { get; }
 
-		public DataGridViewModel(MainViewModel vm) {
-			_mainViewModel = vm;
+		public DataGridViewModel() {
+			MainViewModel = App.MainViewModel;
 
-			_follower = new PropertyFollower<MainViewModel, DataGridViewModel>(vm, this, nameof(IsReadOnlyMode));
+			_follower = new PropertyFollower<MainViewModel, DataGridViewModel>(MainViewModel, this, nameof(IsReadOnlyMode));
 			_follower.Add(nameof(MainViewModel.SelectedItem), _ => {
 				FilterText = string.Empty;
 				OnPropertyChanged(nameof(Values));
@@ -30,13 +30,13 @@ namespace RegistryExplorer.ViewModels {
 
 		public IEnumerable<RegistryValue> Values {
 			get {
-				var regItem = _mainViewModel.SelectedItem as RegistryKeyItem;
+				var regItem = MainViewModel.SelectedItem as RegistryKeyItem;
 				return (_values = (regItem != null ? regItem.Values : null));
 			}
 		}
 
 		public bool IsReadOnlyMode {
-			get { return _mainViewModel.IsReadOnlyMode; }
+			get { return MainViewModel.IsReadOnlyMode; }
 		}
 
 		public void Refresh() {
