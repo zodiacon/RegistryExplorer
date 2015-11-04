@@ -5,7 +5,7 @@
 				 xmlns:vm="clr-namespace:RegistryExplorer.ViewModels" mc:Ignorable="d" d:DesignHeight="30" d:DesignWidth="300"
 				 prism:ViewModelLocator.AutoWireViewModel="True" x:Name="This"
 				 >
-	<Menu Background="WhiteSmoke" Padding="4" FontSize="14">
+	<Menu Background="WhiteSmoke" Padding="4" >
 		<Menu.ItemContainerStyle>
 			<Style TargetType="MenuItem">
 				<Setter Property="Background" Value="WhiteSmoke" />
@@ -57,14 +57,17 @@
 			<Separator />
 			<MenuItem Header="_Permissions..." Command="{Binding EditPermissionsCommand}" Icon="{ext:Image /images/shield.png}" />
 		</MenuItem>
-		<MenuItem Header="_View">
+		<MenuItem Header="_View" DataContext="{Binding MainViewModel}">
 			<MenuItem Header="_Fonts..." />
 			<Separator />
 			<MenuItem Header="_Refresh" InputGestureText="F5" Command="{Binding RefreshCommand}" Icon="{ext:Image /images/refresh.png}" />
 		</MenuItem>
-		<MenuItem Header="_Search">
+      <MenuItem Header="_Search" DataContext="{Binding MainViewModel}">
 			<MenuItem Header="_Find..." InputGestureText="Ctrl+F" Command="{Binding FindCommand}" Icon="{ext:Image /images/find.png}" />
 		</MenuItem>
+      <MenuItem Header="_Tools" DataContext="{Binding MainViewModel}">
+         <MenuItem Header="Export Favorites..." Command="{Binding ExportFavoritesCommand}" />
+      </MenuItem>
 		<MenuItem Header="_Options">
 			<MenuItem Header="Always On Top" IsCheckable="True" IsChecked="{Binding MainViewModel.Options.AlwaysOnTop, Mode=TwoWay}" />
 			<MenuItem Header="_Save Settings on Exit" IsCheckable="True" IsChecked="{Binding SaveSettingsOnExit, Mode=TwoWay}" />

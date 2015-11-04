@@ -45,6 +45,8 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommandBase DeleteCommand { get; }
 		public DelegateCommandBase CreateNewValueCommand { get; }
 		public DelegateCommandBase AddToFavoritesCommand { get; }
+		public DelegateCommandBase RemoveFromFavoritesCommand { get; }
+		public DelegateCommandBase RefreshCommand { get; }
 
 		List<RegistryKeyItemBase> _roots;
 
@@ -60,7 +62,6 @@ namespace RegistryExplorer.ViewModels {
 				}
 			}
 		}
-
 
 		public string CurrentPath {
 			get {
@@ -175,9 +176,11 @@ namespace RegistryExplorer.ViewModels {
 				() => SelectedItem is RegistryKeyItem)
 				.ObservesProperty(() => SelectedItem);
 
+			RefreshCommand = new DelegateCommand(() => SelectedItem.Refresh(), () => SelectedItem != null)
+				.ObservesProperty(() => SelectedItem);
+
 			EndEditingCommand = new DelegateCommand<string>(async name => {
 				try {
-
 					var item = SelectedItem as RegistryKeyItem;
 					Debug.Assert(item != null);
 					if(name == null || name.Equals(item.Text, StringComparison.InvariantCultureIgnoreCase))
@@ -259,7 +262,7 @@ namespace RegistryExplorer.ViewModels {
 			ExportCommand = new DelegateCommand(() => {
 				var dlg = new SaveFileDialog {
 					Title = "Select output file",
-					Filter = "Registry data files|*.dat;.",
+					Filter = "Registry data files|*.dat",
 					OverwritePrompt = true
 				};
 				if(dlg.ShowDialog() == true) {
@@ -285,7 +288,14 @@ namespace RegistryExplorer.ViewModels {
 
 				_roots[1].SubItems.Add(new RegistryKeyItem(item.Parent as RegistryKeyItem, item.Text));
 				SaveFavorites();
-			}, () => SelectedItem is RegistryKeyItem && SelectedItem.Parent != null);
+			}, () => SelectedItem is RegistryKeyItem && !string.IsNullOrEmpty(SelectedItem.Path))
+			.ObservesProperty(() => SelectedItem);
+
+			RemoveFromFavoritesCommand = new DelegateCommand(() => {
+				_roots[1].SubItems.Remove(SelectedItem);
+				SaveFavorites();
+			}, () => SelectedItem != null && SelectedItem.Flags.HasFlag(RegistryKeyFlags.Favorite))
+			.ObservesProperty(() => SelectedItem);
 		}
 
 		public void Dispose() {
@@ -319,11 +329,16 @@ namespace RegistryExplorer.ViewModels {
 			try {
 				using(var stm = IsolatedStorageFile.GetUserStoreForAssembly().OpenFile("favorites.dat", FileMode.Open)) {
 					var keys = Serializer.LoadKeys(stm);
-					foreach(var key in keys)
+					foreach(var key in keys) {
+						key.Flags |= RegistryKeyFlags.Favorite;
 						_roots[1].SubItems.Add(key);
+					}
 				}
 			}
 			catch { }
 		}
+
+		public bool IsInFavorites => SelectedItem.Flags.HasFlag(RegistryKeyFlags.Favorite);
+		public bool IsNotInFavorites => !SelectedItem.Flags.HasFlag(RegistryKeyFlags.Favorite);
 	}
 }

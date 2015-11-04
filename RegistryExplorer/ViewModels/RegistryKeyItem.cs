@@ -30,7 +30,7 @@ namespace RegistryExplorer.ViewModels {
 			}
 			Path = path;
 			int index = path.LastIndexOf('\\');
-			Text = index < 0 ? path : path.Substring(index);
+			Text = index < 0 ? path : path.Substring(index + 1);
 		}
 
 		public RegistryKeyItem(RegistryKeyItemBase parent, RegistryKey root) : base(parent) {

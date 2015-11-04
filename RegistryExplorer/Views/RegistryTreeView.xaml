@@ -105,7 +105,8 @@
                         <Separator />
                         <MenuItem Header="Rename" Command="{Binding BeginRenameCommand}"  />
                         <Separator />
-                        <MenuItem Header="Add to Favorites" Command="{Binding AddToFavoritesCommand}" Icon="{ext:Image /images/favorite.png}" />
+                        <MenuItem Header="Add to Favorites" Command="{Binding AddToFavoritesCommand}" Icon="{ext:Image /images/favorite.png}" Visibility="{Binding IsNotInFavorites, Converter={StaticResource bool2vis}}"/>
+                        <MenuItem Header="Remove from Favorites" Command="{Binding RemoveFromFavoritesCommand}" Visibility="{Binding IsInFavorites, Converter={StaticResource bool2vis}}" />
                         <Separator />
                         <MenuItem Header="Copy Key Name" Command="{Binding CopyKeyNameCommand}" />
                         <MenuItem Header="Copy Full Key Path" Command="{Binding CopyKeyPathCommand}" />

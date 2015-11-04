@@ -9,11 +9,18 @@ using System.Diagnostics;
 using System.Windows;
 
 namespace RegistryExplorer.ViewModels {
+	[Flags]
+	enum RegistryKeyFlags {
+		Favorite = 1,
+	}
+
 	abstract class RegistryKeyItemBase : BindableBase {
 		private string _text;
 		protected ObservableCollection<RegistryKeyItemBase> _subItems;
 
-		public string Path { get; protected set; } 
+		public string Path { get; protected set; }
+
+		public RegistryKeyFlags Flags { get; set; }
 
 		public RegistryKeyItemBase Parent { get; private set; }
 
@@ -23,10 +30,6 @@ namespace RegistryExplorer.ViewModels {
 					_subItems = new ObservableCollection<RegistryKeyItemBase>();
 				return _subItems; 
 			}
-		}
-
-		protected string GetSearchTerm() {
-			return "Windows";
 		}
 
 		protected RegistryKeyItemBase(RegistryKeyItemBase parent) {

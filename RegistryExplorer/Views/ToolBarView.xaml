@@ -42,6 +42,13 @@
          <Image Source="/images/redo.png" />
       </Button>
       <Separator />
+      <Button Command="{Binding RefreshCommand}" >
+         <StackPanel Orientation="Horizontal">
+            <Image Source="/images/refresh.png" Width="16" Height="16" />
+            <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Refresh" />
+         </StackPanel>
+      </Button>
+      <Separator />
       <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" >
          <StackPanel Orientation="Horizontal">
             <Image Source="/images/book_blue.png" Width="16" Height="16" />
