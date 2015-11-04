@@ -17,13 +17,14 @@ namespace RegistryExplorer {
 	public partial class App : Application {
 		internal static readonly string Name = "Registry Explorer";
 
-		internal static readonly MainViewModel MainViewModel = new MainViewModel(DialogCoordinator.Instance);
+		internal static MainViewModel MainViewModel;
 
 		public App() {
 			ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver(view => Type.GetType(view.FullName.Replace("View", "ViewModel")));
 		}
+
 		protected override void OnStartup(StartupEventArgs e) {
-			base.OnStartup(e);
+			MainViewModel = new MainViewModel(DialogCoordinator.Instance);
 
 			var win = new MainWindow();
 			win.DataContext = MainViewModel;

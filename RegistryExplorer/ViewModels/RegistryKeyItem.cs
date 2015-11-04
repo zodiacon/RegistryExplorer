@@ -20,6 +20,19 @@ namespace RegistryExplorer.ViewModels {
 			Path = string.Concat(parent.Path, parent.Path != null ? "\\" : string.Empty, text);
 		}
 
+		public RegistryKeyItem(string rootName, string path) : base(null) {
+			switch(rootName) {
+				case "HKEY_LOCAL_MACHINE": _root = Registry.LocalMachine; break;
+				case "HKEY_CURRENT_USER": _root = Registry.CurrentUser; break;
+				case "HKEY_USERS": _root = Registry.Users; break;
+				case "HKEY_CLASSES_ROOT": _root = Registry.ClassesRoot; break;
+				case "HKEY_CURRENT_CONFIG": _root = Registry.CurrentConfig; break;
+			}
+			Path = path;
+			int index = path.LastIndexOf('\\');
+			Text = index < 0 ? path : path.Substring(index);
+		}
+
 		public RegistryKeyItem(RegistryKeyItemBase parent, RegistryKey root) : base(parent) {
 			_root = root;
 			Text = root.Name;
@@ -28,6 +41,13 @@ namespace RegistryExplorer.ViewModels {
 
 		public RegistryKey Root {
 			get { return _root; }
+		}
+
+		private bool _hiveKey;
+
+		public bool HiveKey {
+			get { return _hiveKey; }
+			set { SetProperty(ref _hiveKey, value); }
 		}
 
 		public override ObservableCollection<RegistryKeyItemBase> SubItems {
@@ -159,6 +179,6 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
-		public DelegateCommandBase BeginRenameCommand { get; } = App.MainViewModel.BeginRenameCommand;
+		//public DelegateCommandBase BeginRenameCommand { get; } = App.MainViewModel.BeginRenameCommand;
 	}
 }

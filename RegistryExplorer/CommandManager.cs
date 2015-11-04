@@ -21,12 +21,12 @@ namespace RegistryExplorer {
 		}
 
 		public void AddCommand(IAppCommand command, bool execute = true) {
+			if(execute)
+				command.Execute();
 			_undoList.Add(command);
 			_redoList.Clear();
 			if(UndoLevel > 0 && _undoList.Count > UndoLevel)
 				_undoList.RemoveAt(0);
-			if(execute)
-				command.Execute();
 			UpdateChanges();
 		}
 

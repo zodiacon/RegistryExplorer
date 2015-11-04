@@ -52,6 +52,9 @@ namespace RegistryExplorer {
 		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint = "RegLoadKeyW", ExactSpelling = true)]
 		public static extern int RegLoadKey(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string subKey, [MarshalAs(UnmanagedType.LPWStr)] string file);
 
+		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint = "RegUnLoadKeyW", ExactSpelling = true)]
+		public static extern int RegUnLoadKey(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string subKey);
+
 		[DllImport("advapi32")]
 		public static extern int RegLoadAppKey(string file, out SafeRegistryHandle hKey, RegistryKeyPermissions samDesired, uint options, uint reserved);
 

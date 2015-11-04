@@ -21,6 +21,8 @@ using RegistryExplorer.Views.Dialogs;
 using RegistryExplorer.ViewModels.Dialogs;
 using RegistryExplorer.Extensions;
 using System.Windows.Input;
+using System.IO.IsolatedStorage;
+using RegistryExplorer.Serialization;
 
 namespace RegistryExplorer.ViewModels {
 	class MainViewModel : ViewModelBase, IDisposable {
@@ -42,39 +44,11 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommandBase CopyKeyPathCommand { get; }
 		public DelegateCommandBase DeleteCommand { get; }
 		public DelegateCommandBase CreateNewValueCommand { get; }
+		public DelegateCommandBase AddToFavoritesCommand { get; }
 
 		List<RegistryKeyItemBase> _roots;
 
-		public IList<RegistryKeyItemBase> RootItems {
-			get {
-				if(_roots == null) {
-					var computer = new RegistryKeyItemSpecial(null) {
-						Text = "Computer",
-						Icon = "/images/workstation2.png",
-						IsExpanded = true
-					};
-					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.ClassesRoot));
-					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.CurrentUser));
-					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.LocalMachine));
-					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.CurrentConfig));
-					computer.SubItems.Add(new RegistryKeyItem(computer, Registry.Users));
-
-					_roots = new List<RegistryKeyItemBase> {
-						computer,
-						new RegistryKeyItemSpecial(null) {
-							Text = "Files",
-							Icon = "/images/folder_blue.png"
-						},
-						new RegistryKeyItemSpecial(null) {
-							Text = "Favorites",
-							Icon = "/images/favorites.png"
-						}
-					};
-
-				}
-				return _roots;
-			}
-		}
+		public IList<RegistryKeyItemBase> RootItems => _roots;
 
 		private RegistryKeyItemBase _selectedItem;
 
@@ -135,6 +109,32 @@ namespace RegistryExplorer.ViewModels {
 			}
 
 			ActiveView = this;
+
+			var computer = new RegistryKeyItemSpecial(null) {
+				Text = "Computer",
+				Icon = "/images/workstation2.png",
+				IsExpanded = true
+			};
+			computer.SubItems.Add(new RegistryKeyItem(computer, Registry.ClassesRoot));
+			computer.SubItems.Add(new RegistryKeyItem(computer, Registry.CurrentUser));
+			computer.SubItems.Add(new RegistryKeyItem(computer, Registry.LocalMachine));
+			computer.SubItems.Add(new RegistryKeyItem(computer, Registry.CurrentConfig));
+			computer.SubItems.Add(new RegistryKeyItem(computer, Registry.Users));
+
+			_roots = new List<RegistryKeyItemBase> {
+				computer,
+				//new RegistryKeyItemSpecial(null) {
+				//	Text = "Files",
+				//	Icon = "/images/folder_blue.png"
+				//},
+				new RegistryKeyItemSpecial(null) {
+					Text = "Favorites",
+					Icon = "/images/favorites.png",
+					IsExpanded = true
+				}
+			};
+
+			LoadFavorites();
 
 			ExitCommand = new DelegateCommand(() => Application.Current.Shutdown());
 
@@ -229,7 +229,9 @@ namespace RegistryExplorer.ViewModels {
 						return;
 					}
 
-					_roots[0].SubItems[vm.Hive == "HKLM" ? 2 : 4].Refresh();
+					var item = _roots[0].SubItems[vm.Hive == "HKLM" ? 2 : 4];
+					item.Refresh();
+					((RegistryKeyItem)item.SubItems.First(i => i.Text == vm.Name)).HiveKey = true;
 				}
 			}, () => IsAdmin && !IsReadOnlyMode)
 			.ObservesProperty(() => IsReadOnlyMode);
@@ -276,6 +278,14 @@ namespace RegistryExplorer.ViewModels {
 
 			}, vm => !IsReadOnlyMode)
 			.ObservesProperty(() => IsReadOnlyMode);
+
+			AddToFavoritesCommand = new DelegateCommand(() => {
+				var item = SelectedItem as RegistryKeyItem;
+				Debug.Assert(item != null);
+
+				_roots[1].SubItems.Add(new RegistryKeyItem(item.Parent as RegistryKeyItem, item.Text));
+				SaveFavorites();
+			}, () => SelectedItem is RegistryKeyItem && SelectedItem.Parent != null);
 		}
 
 		public void Dispose() {
@@ -299,5 +309,21 @@ namespace RegistryExplorer.ViewModels {
 			set { SetProperty(ref _isEditMode, value); }
 		}
 
+		public void SaveFavorites() {
+			using(var stm = IsolatedStorageFile.GetUserStoreForAssembly().OpenFile("favorites.dat", FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
+				Serializer.SaveKeys(stm, _roots[1].SubItems);
+			}
+		}
+
+		public void LoadFavorites() {
+			try {
+				using(var stm = IsolatedStorageFile.GetUserStoreForAssembly().OpenFile("favorites.dat", FileMode.Open)) {
+					var keys = Serializer.LoadKeys(stm);
+					foreach(var key in keys)
+						_roots[1].SubItems.Add(key);
+				}
+			}
+			catch { }
+		}
 	}
 }

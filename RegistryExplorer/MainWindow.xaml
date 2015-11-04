@@ -34,7 +34,7 @@
                <b:ActiveViewBehavior />
             </i:Interaction.Behaviors>
          </view:DataGridView>
-         <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="DarkBlue" Width="3" Margin="-1,0" />
+         <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="{DynamicResource AccentColorBrush}" Width="2" Margin="-1,0" />
       </Grid>
       <StatusBar Grid.Row="3">
          <TextBlock Text="{Binding CurrentPath}" />
