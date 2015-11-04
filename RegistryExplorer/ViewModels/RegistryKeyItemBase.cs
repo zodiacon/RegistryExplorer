@@ -35,6 +35,8 @@ namespace RegistryExplorer.ViewModels {
 
 		public string TypeName => GetType().Name;
 
+		public virtual void Refresh() { }
+
 		public string Text {
 			get { return _text; }
 			set { SetProperty(ref _text, value); }

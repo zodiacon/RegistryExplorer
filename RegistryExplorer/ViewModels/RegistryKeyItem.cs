@@ -104,7 +104,7 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
-		public void Refresh() {
+		public override void Refresh() {
 			_subItems = null;
 			OnPropertyChanged(nameof(SubItems));
 		}

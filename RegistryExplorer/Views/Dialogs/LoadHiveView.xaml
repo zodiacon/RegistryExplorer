@@ -1,0 +1,45 @@
+﻿<metro:MetroWindow x:Class="RegistryExplorer.Views.Dialogs.LoadHiveView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RegistryExplorer.Views.Dialogs"
+        xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="False"
+        mc:Ignorable="d"
+        Title="Load Hive" SizeToContent="WidthAndHeight" TitleCaps="False" ResizeMode="NoResize"
+                   WindowStartupLocation="CenterScreen"
+                   BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}">
+   <Grid Margin="8">
+      <Grid.RowDefinitions>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="8" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="8" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="24" />
+         <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+         <ColumnDefinition Width="Auto" />
+         <ColumnDefinition Width="8" />
+         <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+      <TextBlock Text="Target hive:" VerticalAlignment="Center" />
+      <ComboBox Grid.Column="2" ItemsSource="{Binding LoadHives}" SelectedIndex="{Binding SelectedHive, Mode=TwoWay}" Width="250" HorizontalAlignment="Left" />
+
+      <TextBlock Grid.Row="2" Text="Key name:" />
+      <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Name}" />
+
+      <TextBlock Grid.Row="4" Text="Hive file:" />
+      <DockPanel Grid.Row="4" Grid.Column="2">
+         <Button Content="_Browse..." Command="{Binding BrowseCommand}" DockPanel.Dock="Right" Margin="4,0"/>
+         <TextBox MinWidth="240" Text="{Binding FileName, Mode=TwoWay}" />
+      </DockPanel>
+      <StackPanel Grid.Row="6" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center">
+         <Button Content="Load" MinWidth="80" IsDefault="True" Command="{Binding LoadCommand}" />
+         <Button Content="Cancel" IsCancel="True" MinWidth="80" Margin="12,0" />
+      </StackPanel>
+   </Grid>
+</metro:MetroWindow>

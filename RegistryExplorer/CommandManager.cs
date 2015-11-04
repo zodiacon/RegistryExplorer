@@ -82,5 +82,10 @@ namespace RegistryExplorer {
 			UpdateChanges();
 		}
 
+		public void Clear() {
+			_undoList.Clear();
+			_redoList.Clear();
+			UpdateChanges();
+		}
 	}
 }

@@ -4,82 +4,68 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
-             mc:Ignorable="d" 
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" x:Name="This"
+             prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="30" d:DesignWidth="600">
-    <ToolBar HorizontalAlignment="Stretch" Background="WhiteSmoke" >
-        <ToolBar.Resources>
-            <Style TargetType="Button" x:Key="{x:Static ToolBar.ButtonStyleKey}">
-                <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Opacity" Value=".5" />
-                    </Trigger>
-                </Style.Triggers>
+   <ToolBar HorizontalAlignment="Stretch" DataContext="{Binding MainViewModel}">
+      <ToolBar.Resources>
+         <!--<Style TargetType="Button" x:Key="{x:Static ToolBar.ButtonStyleKey}">
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+            <Style.Triggers>
+               <Trigger Property="IsEnabled" Value="False">
+                  <Setter Property="Opacity" Value=".5" />
+               </Trigger>
+            </Style.Triggers>
+         </Style>-->
+         <!--<Style TargetType="Menu" x:Key="{x:Static ToolBar.MenuStyleKey}">
+         </Style>-->
+         <!--<Style TargetType="ToggleButton" x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" BasedOn="{StaticResource MetroToggleButton}">
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
+            <Style.Triggers>
+               <Trigger Property="IsEnabled" Value="False">
+                  <Setter Property="Opacity" Value=".5" />
+               </Trigger>
+            </Style.Triggers>
+         </Style>-->
+      </ToolBar.Resources>
+      <Button Command="{Binding UndoCommand}" ToolTip="Undo" >
+         <StackPanel Orientation="Horizontal">
+            <Image Source="/images/undo.png" Width="16" Height="16" />
+            <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Undo" />
+         </StackPanel>
+      </Button>
+      <Button Command="{Binding RedoCommand}" ToolTip="Redo" >
+         <Image Source="/images/redo.png" />
+      </Button>
+      <Separator />
+      <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" >
+         <StackPanel Orientation="Horizontal">
+            <Image Source="/images/book_blue.png" Width="16" Height="16" />
+            <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Read Only" />
+         </StackPanel>
+      </ToggleButton>
+      <Separator />
+      <Button Command="{Binding LoadHiveCommand}">
+         <StackPanel Orientation="Horizontal">
+            <Image Source="/images/import2.png" Width="16" Height="16" />
+            <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Load Hive" />
+         </StackPanel>
+      </Button>
+      <Separator />
+      <metro:DropDownButton ItemsSource="{Binding NewValueTypes}" Content="New Value">
+         <metro:DropDownButton.ItemContainerStyle>
+            <Style TargetType="MenuItem">
+               <Setter Property="Command" Value="{Binding Command}" />
             </Style>
-            <Style TargetType="Menu" x:Key="{x:Static ToolBar.MenuStyleKey}">
-                <!--<Setter Property="Background" Value="WhiteSmoke" />-->
-            </Style>
-            <Style TargetType="ToggleButton" x:Key="{x:Static ToolBar.ToggleButtonStyleKey}">
-                <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
-                <Style.Triggers>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Opacity" Value=".5" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </ToolBar.Resources>
-        <Button Command="{Binding UndoCommand}" ToolTip="Undo" >
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/images/undo.png" Width="16" Height="16" />
-                <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Undo" />
-            </StackPanel>
-        </Button>
-        <Button Command="{Binding RedoCommand}" ToolTip="Redo" >
-            <Image Source="/images/redo.png" />
-        </Button>
-        <Separator />
-        <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/images/book_blue.png" Width="16" Height="16" />
-                <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Read Only" />
-            </StackPanel>
-        </ToggleButton>
-        <Separator />
-        <Button Command="{Binding ImportCommand}" ToolTip="Import">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/images/import.png" Width="16" Height="16" />
-                <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Import" />
-            </StackPanel>
-        </Button>
-        <Button Command="{Binding LoadHiveCommand}">
-            <StackPanel Orientation="Horizontal">
-                <Image Source="/images/import2.png" Width="16" Height="16" />
-                <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Load Hive" />
-            </StackPanel>
-        </Button>
-        <Separator />
-        <Menu VerticalAlignment="Center" MinWidth="60" Background="WhiteSmoke">
-            <Menu.ItemContainerStyle>
-                <Style TargetType="MenuItem">
-                    <Setter Property="Background" Value="WhiteSmoke" />
-                </Style>
-            </Menu.ItemContainerStyle>
-            <MenuItem HorizontalContentAlignment="Center" VerticalAlignment="Center">
-                <MenuItem.Header>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="New" />
-                        <Image Source="/images/down.png" Margin="6,0,0,0" Stretch="None" />
-                    </StackPanel>
-                </MenuItem.Header>
-                <MenuItem Header="String Value" />
-                <MenuItem Header="Multi String Value" />
-            </MenuItem>
-        </Menu>
-        <!--<Button Content="{ext:Image /images/cut.png}" Command="Cut" ToolTip="Cut" />
+         </metro:DropDownButton.ItemContainerStyle>
+      </metro:DropDownButton>
+      <!--<Button Content="{ext:Image /images/cut.png}" Command="Cut" ToolTip="Cut" />
             <Button Content="{ext:Image /images/copy.png}" Command="Copy" ToolTip="Copy" />
             <Button Command="Paste" ToolTip="Paste">
                 <Image Source="/images/paste.png" />
             </Button>-->
-    </ToolBar>
+   </ToolBar>
 
 </UserControl>

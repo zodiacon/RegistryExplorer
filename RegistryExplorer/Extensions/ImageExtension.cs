@@ -17,7 +17,7 @@ namespace RegistryExplorer.Extensions {
 		public double Height { get; set; } = double.NaN;
 		public Stretch Stretch { get; set; } = Stretch.Uniform;
 
-		public ImageExtension(string uri = null) {
+		public ImageExtension(string uri) {
 			Uri = uri;
 		}
 

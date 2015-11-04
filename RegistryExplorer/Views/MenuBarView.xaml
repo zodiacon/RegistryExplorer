@@ -18,10 +18,7 @@
 			<MenuItem Header="_Import..." Command="{Binding ImportCommand}" Icon="{ext:Image /images/import.png}" />
 			<MenuItem Header="_Export..." Command="{Binding ExportCommand}" Icon="{ext:Image /images/export.png}" />
 			<Separator />
-			<MenuItem Header="_Load Hive Into" Icon="{ext:Image /images/import2.png}">
-				<MenuItem Header="HKEY_LOCAL_MACHINE" Command="{Binding LoadHiveCommand}" CommandParameter="HKLM" />
-				<MenuItem Header="HKEY_USERS" Command="{Binding LoadHiveCommand}" CommandParameter="HKU" />
-			</MenuItem>
+			<MenuItem Header="_Load Hive..." Icon="{ext:Image /images/import2.png}" Command="{Binding LoadHiveCommand}" />
 			<MenuItem Header="_Unload Hive" Command="{Binding UnloadHiveCommand}" />
 			<Separator />
 			<MenuItem Header="Launch with Admin rights" Command="{Binding LaunchWithAdminRightsCommand}">

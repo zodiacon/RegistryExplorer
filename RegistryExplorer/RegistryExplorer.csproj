@@ -101,6 +101,8 @@
     <Compile Include="Behaviors\ValueCellTemplateSelector.cs" />
     <Compile Include="Behaviors\VirtualizingStackPanelEx.cs" />
     <Compile Include="CommandManager.cs" />
+    <Compile Include="DialogViewModelBase.cs" />
+    <Compile Include="Extensions\DialogHelper.cs" />
     <Compile Include="Model\Commands.cs" />
     <Compile Include="Converters\DataTypeToImageConverter.cs" />
     <Compile Include="Extensions\ImageExtension.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="ViewModelBase.cs" />
     <Compile Include="ViewModels\AccentViewModel.cs" />
     <Compile Include="ViewModels\DataGridViewModel.cs" />
+    <Compile Include="ViewModels\Dialogs\LoadHiveViewModel.cs" />
     <Compile Include="ViewModels\MenuBarViewModel.cs" />
     <Compile Include="ViewModels\RegistryKeyItemBase.cs" />
     <Compile Include="ViewModels\RegistryKeyItemSpecial.cs" />
@@ -117,8 +120,12 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\RegistryKeyItem.cs" />
     <Compile Include="ViewModels\RegistryValue.cs" />
+    <Compile Include="ViewModels\ToolBarViewModel.cs" />
     <Compile Include="Views\DataGridView.xaml.cs">
       <DependentUpon>DataGridView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialogs\LoadHiveView.xaml.cs">
+      <DependentUpon>LoadHiveView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MenuBarView.xaml.cs">
       <DependentUpon>MenuBarView.xaml</DependentUpon>
@@ -147,6 +154,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\DataGridView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dialogs\LoadHiveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

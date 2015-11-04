@@ -8,6 +8,7 @@ using System.Windows;
 using RegistryExplorer.ViewModels;
 using MahApps.Metro;
 using Prism.Mvvm;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace RegistryExplorer {
 	/// <summary>
@@ -16,7 +17,7 @@ namespace RegistryExplorer {
 	public partial class App : Application {
 		internal static readonly string Name = "Registry Explorer";
 
-		internal static readonly MainViewModel MainViewModel = new MainViewModel();
+		internal static readonly MainViewModel MainViewModel = new MainViewModel(DialogCoordinator.Instance);
 
 		public App() {
 			ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver(view => Type.GetType(view.FullName.Replace("View", "ViewModel")));

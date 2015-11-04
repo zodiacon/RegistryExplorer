@@ -16,6 +16,10 @@ using Prism.Commands;
 using Prism.Mvvm;
 using RegistryExplorer.Model;
 using System.Windows.Data;
+using MahApps.Metro.Controls.Dialogs;
+using RegistryExplorer.Views.Dialogs;
+using RegistryExplorer.ViewModels.Dialogs;
+using RegistryExplorer.Extensions;
 
 namespace RegistryExplorer.ViewModels {
 	class MainViewModel : ViewModelBase, IDisposable {
@@ -115,7 +119,11 @@ namespace RegistryExplorer.ViewModels {
 			}
 		}
 
-		public MainViewModel() {
+		public IDialogCoordinator DialogCoordinator { get; }
+
+		public MainViewModel(IDialogCoordinator _dialogCoordinator) {
+			DialogCoordinator = _dialogCoordinator;
+
 			try {
 				NativeMethods.EnablePrivilege("SeBackupPrivilege");
 				NativeMethods.EnablePrivilege("SeRestorePrivilege");
@@ -165,7 +173,7 @@ namespace RegistryExplorer.ViewModels {
 				() => SelectedItem is RegistryKeyItem)
 				.ObservesProperty(() => SelectedItem);
 
-			EndEditingCommand = new DelegateCommand<string>(name => {
+			EndEditingCommand = new DelegateCommand<string>(async name => {
 				try {
 
 					var item = SelectedItem as RegistryKeyItem;
@@ -174,7 +182,7 @@ namespace RegistryExplorer.ViewModels {
 						return;
 
 					if(item.Parent.SubItems.Any(i => name.Equals(i.Text, StringComparison.InvariantCultureIgnoreCase))) {
-						MessageBox.Show(string.Format("Key name '{0}' already exists", name), App.Name);
+						await DialogCoordinator.ShowMessageAsync(this, App.Name, string.Format("Key name '{0}' already exists", name));
 						return;
 					}
 					CommandManager.AddCommand(Commands.RenameKey(new RenameKeyCommandContext {
@@ -210,21 +218,19 @@ namespace RegistryExplorer.ViewModels {
 				RedoCommand.RaiseCanExecuteChanged();
 			}, () => !IsReadOnlyMode && CommandManager.CanRedo).ObservesProperty(() => IsReadOnlyMode);
 
-			LoadHiveCommand = new DelegateCommand(() => {
-				var dlg = new OpenFileDialog {
-					Title = "Select File",
-					CheckFileExists = true,
-					Filter = "All Files|*.*"
-				};
-				if(dlg.ShowDialog() == true) {
-					var newName = Guid.NewGuid().ToString();
-					int error = NativeMethods.RegLoadKey(Registry.LocalMachine.Handle, newName, dlg.FileName);
-					if(error > 0) {
-						MessageBox.Show("Error opening file: " + error.ToString());
+			LoadHiveCommand = new DelegateCommand(async () => {
+				var vm = DialogHelper.ShowDialog<LoadHiveViewModel, LoadHiveView>();
+				if(vm.ShowDialog() == true) {
+					int error = NativeMethods.RegLoadKey(vm.Hive == "HKLM" ? Registry.LocalMachine.Handle : Registry.Users.Handle, vm.Name, vm.FileName);
+					if(error != 0) {
+						await DialogCoordinator.ShowMessageAsync(this, App.Name, string.Format("Error opening file: {0}", error.ToString()));
 						return;
 					}
+
+					_roots[0].SubItems[vm.Hive == "HKLM" ? 2 : 4].Refresh();
 				}
-			});
+			}, () => IsAdmin && !IsReadOnlyMode)
+			.ObservesProperty(() => IsReadOnlyMode);
 
 			DeleteCommand = new DelegateCommand(() => {
 				var item = SelectedItem as RegistryKeyItem;
@@ -234,6 +240,7 @@ namespace RegistryExplorer.ViewModels {
 					if(MessageBox.Show("Running with standard user rights prevents undo for deletion. Delete anyway?",
 						App.Name, MessageBoxButton.OKCancel, MessageBoxImage.Exclamation) == MessageBoxResult.Cancel)
 						return;
+					CommandManager.Clear();
 				}
 				var tempFile = Path.GetTempFileName();
 				CommandManager.AddCommand(Commands.DeleteKey(new DeleteKeyCommandContext {
@@ -245,7 +252,7 @@ namespace RegistryExplorer.ViewModels {
 			ExportCommand = new DelegateCommand(() => {
 				var dlg = new SaveFileDialog {
 					Title = "Select output file",
-					Filter = "Registry files|*.reg",
+					Filter = "Registry data files|*.dat;.",
 					OverwritePrompt = true
 				};
 				if(dlg.ShowDialog() == true) {
@@ -279,10 +286,7 @@ namespace RegistryExplorer.ViewModels {
 
 		public bool IsEditMode {
 			get { return _isEditMode; }
-			set {
-				if(SetProperty(ref _isEditMode, value)) {
-				}
-			}
+			set { SetProperty(ref _isEditMode, value); }
 		}
 
 	}

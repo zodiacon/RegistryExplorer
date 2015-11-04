@@ -7,35 +7,37 @@
         xmlns:conv="clr-namespace:RegistryExplorer.Converters"
         xmlns:view="clr-namespace:RegistryExplorer.Views" 
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+         xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="{Binding Title}" MinHeight="350" MinWidth="525"
-        TitleCaps="False" BorderThickness="1" BorderBrush="Blue" Icon="/Images/registry.ico">
-    <Window.Resources>
-    </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <view:MenuBarView />
-        <view:ToolBarView Grid.Row="1" />
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="2*"/>
-            </Grid.ColumnDefinitions>
-            <view:RegistryTreeView FontSize="12" />
-            <view:DataGridView Grid.Column="1" >
-                <i:Interaction.Behaviors>
-                    <b:ActiveViewBehavior />
-                </i:Interaction.Behaviors>
-            </view:DataGridView>
-            <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="DarkBlue" Width="3" Margin="-1,0" />
-        </Grid>
-        <StatusBar Grid.Row="3">
-            <TextBlock Text="{Binding CurrentPath}" />
-        </StatusBar>
-    </Grid>
+        Title="{Binding Title}" MinHeight="350" MinWidth="525" 
+         dialog:DialogParticipation.Register="{Binding}"
+                   TitleCaps="False" BorderThickness="1" BorderBrush="Blue" Icon="/Images/registry.ico">
+   <Window.Resources>
+   </Window.Resources>
+   <Grid>
+      <Grid.RowDefinitions>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition />
+         <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <view:MenuBarView />
+      <view:ToolBarView Grid.Row="1" />
+      <Grid Grid.Row="2">
+         <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="2*"/>
+         </Grid.ColumnDefinitions>
+         <view:RegistryTreeView FontSize="12" />
+         <view:DataGridView Grid.Column="1" >
+            <i:Interaction.Behaviors>
+               <b:ActiveViewBehavior />
+            </i:Interaction.Behaviors>
+         </view:DataGridView>
+         <GridSplitter HorizontalAlignment="Right" VerticalAlignment="Stretch" Background="DarkBlue" Width="3" Margin="-1,0" />
+      </Grid>
+      <StatusBar Grid.Row="3">
+         <TextBlock Text="{Binding CurrentPath}" />
+      </StatusBar>
+   </Grid>
 </metro:MetroWindow>
