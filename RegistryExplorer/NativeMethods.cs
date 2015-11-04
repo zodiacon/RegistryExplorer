@@ -49,8 +49,8 @@ namespace RegistryExplorer {
 		[DllImport("user32")]
 		public static extern bool DestroyIcon(IntPtr hIcon);
 
-		[DllImport("advapi32")]
-		public static extern int RegLoadKey(SafeRegistryHandle hKey, string subKey, string file);
+		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint = "RegLoadKeyW", ExactSpelling = true)]
+		public static extern int RegLoadKey(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string subKey, [MarshalAs(UnmanagedType.LPWStr)] string file);
 
 		[DllImport("advapi32")]
 		public static extern int RegLoadAppKey(string file, out SafeRegistryHandle hKey, RegistryKeyPermissions samDesired, uint options, uint reserved);
@@ -67,7 +67,7 @@ namespace RegistryExplorer {
 		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint = "RegSaveKeyW")]
 		public static extern int RegSaveKey(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string filename, IntPtr secAttributes);
 
-		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint = "RegRestoreKey")]
+		[DllImport("advapi32", CharSet = CharSet.Unicode, EntryPoint = "RegRestoreKeyW", ExactSpelling = true)]
 		public static extern int RegRestoreKey(SafeRegistryHandle hKey, [MarshalAs(UnmanagedType.LPWStr)] string filename, uint flags = 8);
 
 		static Dictionary<string, object> _privileges = new Dictionary<string, object>();

@@ -5,12 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:conv="clr-namespace:RegistryExplorer.Converters"
              xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" x:Name="This"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="30" d:DesignWidth="600">
    <ToolBar HorizontalAlignment="Stretch" DataContext="{Binding MainViewModel}">
       <ToolBar.Resources>
+         <conv:StringPrefixConverter x:Key="prefixConverter" />
          <!--<Style TargetType="Button" x:Key="{x:Static ToolBar.ButtonStyleKey}">
             <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
             <Style.Triggers>
@@ -30,13 +32,13 @@
             </Style.Triggers>
          </Style>-->
       </ToolBar.Resources>
-      <Button Command="{Binding UndoCommand}" ToolTip="Undo" >
+      <Button Command="{Binding UndoCommand}" ToolTip="{Binding CommandManager.UndoDescription, Converter={StaticResource prefixConverter}, ConverterParameter=Undo}" >
          <StackPanel Orientation="Horizontal">
             <Image Source="/images/undo.png" Width="16" Height="16" />
             <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Undo" />
          </StackPanel>
       </Button>
-      <Button Command="{Binding RedoCommand}" ToolTip="Redo" >
+      <Button Command="{Binding RedoCommand}" ToolTip="{Binding CommandManager.RedoDescription, Converter={StaticResource prefixConverter}, ConverterParameter=Redo}" >
          <Image Source="/images/redo.png" />
       </Button>
       <Separator />
@@ -54,10 +56,12 @@
          </StackPanel>
       </Button>
       <Separator />
-      <metro:DropDownButton ItemsSource="{Binding NewValueTypes}" Content="New Value">
+      <metro:DropDownButton ItemsSource="{Binding DataContext.NewValueTypes, ElementName=This}" Content="New Value" DisplayMemberPath="Text"
+                            Icon="{ext:Image /images/newvalue.png}" >
          <metro:DropDownButton.ItemContainerStyle>
-            <Style TargetType="MenuItem">
+            <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
                <Setter Property="Command" Value="{Binding Command}" />
+               <Setter Property="CommandParameter" Value="{Binding}" />
             </Style>
          </metro:DropDownButton.ItemContainerStyle>
       </metro:DropDownButton>

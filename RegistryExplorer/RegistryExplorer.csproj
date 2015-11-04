@@ -101,6 +101,7 @@
     <Compile Include="Behaviors\ValueCellTemplateSelector.cs" />
     <Compile Include="Behaviors\VirtualizingStackPanelEx.cs" />
     <Compile Include="CommandManager.cs" />
+    <Compile Include="Converters\StringPrefixConverter.cs" />
     <Compile Include="DialogViewModelBase.cs" />
     <Compile Include="Extensions\DialogHelper.cs" />
     <Compile Include="Model\Commands.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="ViewModels\RegistryKeyItem.cs" />
     <Compile Include="ViewModels\RegistryValue.cs" />
     <Compile Include="ViewModels\ToolBarViewModel.cs" />
+    <Compile Include="ViewModels\ValueViewModel.cs" />
     <Compile Include="Views\DataGridView.xaml.cs">
       <DependentUpon>DataGridView.xaml</DependentUpon>
     </Compile>
@@ -277,6 +279,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\registry.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\newvalue.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

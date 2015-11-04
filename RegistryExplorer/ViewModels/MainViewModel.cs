@@ -20,6 +20,7 @@ using MahApps.Metro.Controls.Dialogs;
 using RegistryExplorer.Views.Dialogs;
 using RegistryExplorer.ViewModels.Dialogs;
 using RegistryExplorer.Extensions;
+using System.Windows.Input;
 
 namespace RegistryExplorer.ViewModels {
 	class MainViewModel : ViewModelBase, IDisposable {
@@ -40,6 +41,7 @@ namespace RegistryExplorer.ViewModels {
 		public DelegateCommandBase CopyKeyNameCommand { get; }
 		public DelegateCommandBase CopyKeyPathCommand { get; }
 		public DelegateCommandBase DeleteCommand { get; }
+		public DelegateCommandBase CreateNewValueCommand { get; }
 
 		List<RegistryKeyItemBase> _roots;
 
@@ -247,6 +249,9 @@ namespace RegistryExplorer.ViewModels {
 					Key = item,
 					TempFile = tempFile
 				}));
+				CommandManager.UpdateChanges();
+				UndoCommand.RaiseCanExecuteChanged();
+				RedoCommand.RaiseCanExecuteChanged();
 			}, () => !IsReadOnlyMode && SelectedItem is RegistryKeyItem && SelectedItem.Path != null).ObservesProperty(() => IsReadOnlyMode);
 
 			ExportCommand = new DelegateCommand(() => {
@@ -266,6 +271,11 @@ namespace RegistryExplorer.ViewModels {
 				}
 			}, () => IsAdmin && SelectedItem is RegistryKeyItem)
 			.ObservesProperty(() => SelectedItem);
+
+			CreateNewValueCommand = new DelegateCommand<ValueViewModel>(vm => {
+
+			}, vm => !IsReadOnlyMode)
+			.ObservesProperty(() => IsReadOnlyMode);
 		}
 
 		public void Dispose() {
