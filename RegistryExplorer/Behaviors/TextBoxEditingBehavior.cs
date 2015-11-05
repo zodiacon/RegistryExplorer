@@ -17,14 +17,11 @@ namespace RegistryExplorer.Behaviors {
 			base.OnAttached();
 
 			AssociatedObject.IsVisibleChanged += AssociatedObject_IsVisibleChanged;
-			AssociatedObject.PreviewKeyUp += AssociatedObject_KeyUp;
-			AssociatedObject.LostFocus += AssociatedObject_LostFocus;
 		}
 
 		protected override void OnDetaching() {
-			AssociatedObject.PreviewKeyUp -= AssociatedObject_KeyUp;
+
 			AssociatedObject.IsVisibleChanged -= AssociatedObject_IsVisibleChanged;
-			AssociatedObject.LostFocus -= AssociatedObject_LostFocus;
 
 			base.OnDetaching();
 		}
@@ -33,45 +30,7 @@ namespace RegistryExplorer.Behaviors {
 			if((bool)e.NewValue) {
 				AssociatedObject.SelectAll();
 				AssociatedObject.Focus();
-				_cancel = false;
 			}
 		}
-
-		private void AssociatedObject_LostFocus(object sender, RoutedEventArgs e) {
-			if(AssociatedObject.IsVisible)
-				ExecutEndEditCommand();
-		}
-
-		private void ExecutEndEditCommand() {
-			if(EndEditCommand != null && EndEditCommand.CanExecute(AssociatedObject.Text))
-				EndEditCommand.Execute(_cancel ? null : AssociatedObject.Text);
-		}
-
-		bool _cancel;
-		private void AssociatedObject_KeyUp(object sender, KeyEventArgs e) {
-			switch(e.Key) {
-				case Key.Escape:
-					_cancel = true;
-					break;
-
-				case Key.Enter:
-					break;
-
-				default:
-					return;
-			}
-			e.Handled = true;
-			ExecutEndEditCommand();
-		}
-
-		public ICommand EndEditCommand {
-			get { return (ICommand)GetValue(EndEditCommandProperty); }
-			set { SetValue(EndEditCommandProperty, value); }
-		}
-
-		public static readonly DependencyProperty EndEditCommandProperty =
-			DependencyProperty.Register("EndEditCommand", typeof(ICommand), typeof(TextBoxEditingBehavior), new PropertyMetadata(null));
-
-
 	}
 }

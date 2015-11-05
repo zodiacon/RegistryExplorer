@@ -36,12 +36,9 @@ namespace RegistryExplorer.ViewModels {
 		public RegistryKeyItem(RegistryKeyItemBase parent, RegistryKey root) : base(parent) {
 			_root = root;
 			Text = root.Name;
-			//SubItems = new ObservableCollection<RegistryKeyItemBase>(SubKeys);
 		}
 
-		public RegistryKey Root {
-			get { return _root; }
-		}
+		public RegistryKey Root => _root;
 
 		private bool _hiveKey;
 

@@ -20,10 +20,19 @@
             <TextBox Text="{Binding Text, Mode=OneWay}" VerticalAlignment="Center" Padding="1" Margin="3,0,2,0" MaxLength="64" 
                           MinWidth="50" x:Name="_t1" Visibility="Collapsed" BorderThickness="0">
                <i:Interaction.Behaviors>
-                  <b:TextBoxEditingBehavior EndEditCommand="{Binding DataContext.EndEditingCommand, ElementName=This}" />
+                  
+                  <b:TextBoxEditingBehavior />
                </i:Interaction.Behaviors>
                <i:Interaction.Triggers>
-
+                  <i:EventTrigger EventName="LostKeyboardFocus">
+                     <i:InvokeCommandAction Command="{Binding DataContext.EndEditingCommand, ElementName=This}" CommandParameter="{Binding Text, ElementName=_t1, Mode=OneWay}" />
+                  </i:EventTrigger>
+                  <ei:KeyTrigger Key="Return" ActiveOnFocus="True">
+                     <i:InvokeCommandAction Command="{Binding DataContext.EndEditingCommand, ElementName=This}" CommandParameter="{Binding Text, ElementName=_t1, Mode=OneWay}" />
+                  </ei:KeyTrigger>
+                  <ei:KeyTrigger Key="Esc" ActiveOnFocus="True">
+                     <i:InvokeCommandAction Command="{Binding DataContext.EndEditingCommand, ElementName=This}" CommandParameter="{x:Null}" />
+                  </ei:KeyTrigger>
                </i:Interaction.Triggers>
             </TextBox>
          </StackPanel>
