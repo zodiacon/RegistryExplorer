@@ -69,7 +69,8 @@
          <RowDefinition Height="Auto" />
          <RowDefinition />
       </Grid.RowDefinitions>
-      <TreeView Grid.Row="1" FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" IsTabStop="True" x:Name="_treeView" FocusManager.IsFocusScope="True">
+      <TreeView Grid.Row="1" FontSize="12" ItemsSource="{Binding RootItems}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                IsTabStop="True" x:Name="_treeView" FocusManager.IsFocusScope="True">
          <i:Interaction.Behaviors>
             <b:SelectedTreeViewItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay, Delay=400}" />
             <b:KeyNavigationTreeViewBehavior />
@@ -87,10 +88,10 @@
          <TreeView.ItemContainerStyle>
             <Style TargetType="TreeViewItem">
 
-               <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, Delay=200}" />
-               <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, Delay=200}" />
+               <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, Delay=400}" />
+               <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay, Delay=400}" />
                <!--<Setter Property="Visibility" Value="{Binding Visibility}" />-->
-               <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
+               <!--<Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />-->
                <Setter Property="ItemsPanel">
                   <Setter.Value>
                      <ItemsPanelTemplate>
@@ -129,9 +130,9 @@
                   </Setter.Value>
                </Setter>
                <Style.Triggers>
-                  <DataTrigger Binding="{Binding TypeName}" Value="RegistryKeyItemSpecial">
+                  <!--<DataTrigger Binding="{Binding TypeName}" Value="RegistryKeyItemSpecial">
                      <Setter Property="ContextMenu" Value="{x:Null}" />
-                  </DataTrigger>
+                  </DataTrigger>-->
                </Style.Triggers>
             </Style>
          </TreeView.ItemContainerStyle>

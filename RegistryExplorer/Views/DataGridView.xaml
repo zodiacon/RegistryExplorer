@@ -6,6 +6,7 @@
              xmlns:conv="clr-namespace:RegistryExplorer.Converters"
              xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
 				 xmlns:prism="http://prismlibrary.com/"
              mc:Ignorable="d" prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="300" d:DesignWidth="500">
@@ -24,12 +25,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <DockPanel>
-            <Button FontSize="16" DockPanel.Dock="Right" Margin="2,2,8,2" Padding="2" Command="{Binding ClearFilterCommand}" ToolTip="Clear Filter">
-                <Image Source="/images/delete2.png" Stretch="None" />
-            </Button>
-            <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged, Delay=300}" Margin="4,2" VerticalAlignment="Center" Padding="2"/>
-        </DockPanel>
+        <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged, Delay=300}" Margin="4,2" VerticalAlignment="Center" Padding="2"
+                     metro:TextBoxHelper.ClearTextButton="True" metro:TextBoxHelper.SelectAllOnFocus="True" metro:TextBoxHelper.Watermark="Type text to filter values"/>
         <DataGrid Grid.Row="1"  VirtualizingPanel.IsVirtualizing="False" ItemsSource="{Binding Values}" 
                       AutoGenerateColumns="False" GridLinesVisibility="Horizontal" SelectionUnit="FullRow" SelectionMode="Extended" CanUserReorderColumns="False" 
                       CanUserResizeRows="False" CanUserSortColumns="True" IsReadOnly="{Binding IsReadOnlyMode}" Background="WhiteSmoke">
