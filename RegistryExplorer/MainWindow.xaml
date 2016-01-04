@@ -9,9 +9,14 @@
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
          xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="{Binding Title}" MinHeight="350" MinWidth="525" 
-         dialog:DialogParticipation.Register="{Binding}"
-                   TitleCaps="False" BorderThickness="1" BorderBrush="Blue" Icon="/Images/registry.ico">
+        Title="{Binding Title}" MinHeight="350" MinWidth="525"
+        dialog:DialogParticipation.Register="{Binding}"
+        TitleCaps="False" BorderThickness="1" BorderBrush="{DynamicResource AccentColorBrush}" Icon="/Images/registry.ico">
+    <metro:MetroWindow.TitleTemplate>
+        <DataTemplate>
+            <TextBlock Text="{Binding}" FontSize="14" VerticalAlignment="Center" FontWeight="Bold"  />
+        </DataTemplate>
+    </metro:MetroWindow.TitleTemplate>
    <Window.Resources>
    </Window.Resources>
    <Grid>

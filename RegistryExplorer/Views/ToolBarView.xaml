@@ -10,10 +10,12 @@
              mc:Ignorable="d" x:Name="This"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:DesignHeight="30" d:DesignWidth="600">
-   <ToolBar HorizontalAlignment="Stretch" DataContext="{Binding MainViewModel}">
-      <ToolBar.Resources>
-         <conv:StringPrefixConverter x:Key="prefixConverter" />
-         <!--<Style TargetType="Button" x:Key="{x:Static ToolBar.ButtonStyleKey}">
+    <ToolBar HorizontalAlignment="Stretch" DataContext="{Binding MainViewModel}" >
+        <ToolBar.Resources>
+            <conv:StringPrefixConverter x:Key="prefixConverter" />
+            <!--<Style TargetType="Menu" x:Key="{x:Static ToolBar.MenuStyleKey}">
+         </Style>-->
+            <!--<Style TargetType="ToggleButton" x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" BasedOn="{StaticResource MetroToggleButton}">
             <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
             <Style.Triggers>
                <Trigger Property="IsEnabled" Value="False">
@@ -21,62 +23,52 @@
                </Trigger>
             </Style.Triggers>
          </Style>-->
-         <!--<Style TargetType="Menu" x:Key="{x:Static ToolBar.MenuStyleKey}">
-         </Style>-->
-         <!--<Style TargetType="ToggleButton" x:Key="{x:Static ToolBar.ToggleButtonStyleKey}" BasedOn="{StaticResource MetroToggleButton}">
-            <Setter Property="ToolTipService.ShowOnDisabled" Value="True" />
-            <Style.Triggers>
-               <Trigger Property="IsEnabled" Value="False">
-                  <Setter Property="Opacity" Value=".5" />
-               </Trigger>
-            </Style.Triggers>
-         </Style>-->
-      </ToolBar.Resources>
-      <Button Command="{Binding UndoCommand}" ToolTip="{Binding CommandManager.UndoDescription, Converter={StaticResource prefixConverter}, ConverterParameter=Undo}" >
-         <StackPanel Orientation="Horizontal">
-            <Image Source="/images/undo.png" Width="16" Height="16" />
-            <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Undo" />
-         </StackPanel>
-      </Button>
-      <Button Command="{Binding RedoCommand}" ToolTip="{Binding CommandManager.RedoDescription, Converter={StaticResource prefixConverter}, ConverterParameter=Redo}" >
-         <Image Source="/images/redo.png" />
-      </Button>
-      <Separator />
-      <Button Command="{Binding RefreshCommand}" >
-         <StackPanel Orientation="Horizontal">
-            <Image Source="/images/refresh.png" Width="16" Height="16" />
-            <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Refresh" />
-         </StackPanel>
-      </Button>
-      <Separator />
-      <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" >
-         <StackPanel Orientation="Horizontal">
-            <Image Source="/images/book_blue.png" Width="16" Height="16" />
-            <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Read Only" />
-         </StackPanel>
-      </ToggleButton>
-      <Separator />
-      <Button Command="{Binding LoadHiveCommand}">
-         <StackPanel Orientation="Horizontal">
-            <Image Source="/images/import2.png" Width="16" Height="16" />
-            <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Load Hive" />
-         </StackPanel>
-      </Button>
-      <Separator />
-      <metro:DropDownButton ItemsSource="{Binding DataContext.NewValueTypes, ElementName=This}" Content="New Value" DisplayMemberPath="Text"
+        </ToolBar.Resources>
+        <Button Command="{Binding UndoCommand}" ToolTip="{Binding CommandManager.UndoDescription, Converter={StaticResource prefixConverter}, ConverterParameter=Undo}" >
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/images/undo.png" Width="16" Height="16" />
+                <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Undo" />
+            </StackPanel>
+        </Button>
+        <Button Command="{Binding RedoCommand}" ToolTip="{Binding CommandManager.RedoDescription, Converter={StaticResource prefixConverter}, ConverterParameter=Redo}" >
+            <Image Source="/images/redo.png" />
+        </Button>
+        <Separator />
+        <Button Command="{Binding RefreshCommand}" >
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/images/refresh.png" Width="16" Height="16" />
+                <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Refresh" />
+            </StackPanel>
+        </Button>
+        <Separator />
+        <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" >
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/images/book_blue.png" Width="16" Height="16" />
+                <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Read Only" />
+            </StackPanel>
+        </ToggleButton>
+        <Separator />
+        <Button Command="{Binding LoadHiveCommand}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="/images/import2.png" Width="16" Height="16" />
+                <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Load Hive" />
+            </StackPanel>
+        </Button>
+        <Separator />
+        <metro:DropDownButton ItemsSource="{Binding DataContext.NewValueTypes, ElementName=This}" Content="New Value" DisplayMemberPath="Text"
                             Icon="{ext:Image /images/newvalue.png}" >
-         <metro:DropDownButton.ItemContainerStyle>
-            <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
-               <Setter Property="Command" Value="{Binding Command}" />
-               <Setter Property="CommandParameter" Value="{Binding}" />
-            </Style>
-         </metro:DropDownButton.ItemContainerStyle>
-      </metro:DropDownButton>
-      <!--<Button Content="{ext:Image /images/cut.png}" Command="Cut" ToolTip="Cut" />
+            <metro:DropDownButton.ItemContainerStyle>
+                <Style TargetType="MenuItem" BasedOn="{StaticResource MetroMenuItem}">
+                    <Setter Property="Command" Value="{Binding Command}" />
+                    <Setter Property="CommandParameter" Value="{Binding}" />
+                </Style>
+            </metro:DropDownButton.ItemContainerStyle>
+        </metro:DropDownButton>
+        <!--<Button Content="{ext:Image /images/cut.png}" Command="Cut" ToolTip="Cut" />
             <Button Content="{ext:Image /images/copy.png}" Command="Copy" ToolTip="Copy" />
             <Button Command="Paste" ToolTip="Paste">
                 <Image Source="/images/paste.png" />
             </Button>-->
-   </ToolBar>
+    </ToolBar>
 
 </UserControl>
