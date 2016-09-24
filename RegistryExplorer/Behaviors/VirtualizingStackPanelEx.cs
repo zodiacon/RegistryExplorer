@@ -12,7 +12,7 @@ namespace RegistryExplorer.Behaviors {
 		/// </summary>
 		public void BringIntoView(int index) {
 
-			this.BringIndexIntoView(index);
+			base.BringIndexIntoView(index);
 		}
 	}
 
