@@ -26,15 +26,15 @@
          <RowDefinition />
          <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
-      <view:MenuBarView />
-      <view:ToolBarView Grid.Row="1" />
+      <view:MenuBarView DataContext="{Binding MenuBar}" />
+      <view:ToolBarView Grid.Row="1" DataContext="{Binding ToolBar}" />
       <Grid Grid.Row="2">
          <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition Width="2*"/>
          </Grid.ColumnDefinitions>
          <view:RegistryTreeView FontSize="12" />
-         <view:DataGridView Grid.Column="1" >
+         <view:DataGridView Grid.Column="1" DataContext="{Binding SelectedItem}">
             <i:Interaction.Behaviors>
                <b:ActiveViewBehavior />
             </i:Interaction.Behaviors>

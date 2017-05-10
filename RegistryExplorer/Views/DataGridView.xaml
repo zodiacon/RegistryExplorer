@@ -8,7 +8,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
 				 xmlns:prism="http://prismlibrary.com/"
-             mc:Ignorable="d" prism:ViewModelLocator.AutoWireViewModel="True"
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="500">
     <UserControl.Resources>
         <b:ValueCellTemplateSelector x:Key="ValueCellTemplateSelector">
@@ -29,7 +29,7 @@
                      metro:TextBoxHelper.ClearTextButton="True" metro:TextBoxHelper.SelectAllOnFocus="True" metro:TextBoxHelper.Watermark="Type text to filter values"/>
         <DataGrid Grid.Row="1"  VirtualizingPanel.IsVirtualizing="False" ItemsSource="{Binding Values}" 
                       AutoGenerateColumns="False" GridLinesVisibility="Horizontal" SelectionUnit="FullRow" SelectionMode="Extended" CanUserReorderColumns="False" 
-                      CanUserResizeRows="False" CanUserSortColumns="True" IsReadOnly="{Binding IsReadOnlyMode}" Background="WhiteSmoke">
+                      CanUserResizeRows="False" CanUserSortColumns="True" IsReadOnly="{Binding IsReadOnlyMode}" metro:ButtonHelper.PreserveTextCase="True">
             <DataGrid.Style>
                 <Style TargetType="DataGrid">
                     <Setter Property="ContextMenu">
@@ -44,14 +44,14 @@
                 </Style>
             </DataGrid.Style>
             <DataGrid.ColumnHeaderStyle>
-                <Style TargetType="DataGridColumnHeader">
+                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MetroDataGridColumnHeader}">
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                     <Setter Property="HorizontalContentAlignment" Value="Left" />
                     <Setter Property="FontWeight" Value="Bold" />
-                    <Setter Property="Background" Value="LightBlue" />
+                    <Setter Property="Background" Value="{DynamicResource AccentColorBrush4}" />
                     <Setter Property="Padding" Value="8,2,2,2" />
                     <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="BorderBrush" Value="Black" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource BlackBrush}" />
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Columns>

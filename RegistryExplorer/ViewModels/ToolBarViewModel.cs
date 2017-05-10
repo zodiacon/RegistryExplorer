@@ -13,9 +13,8 @@ namespace RegistryExplorer.ViewModels {
 	class ToolBarViewModel : BindableBase {
 		public MainViewModel MainViewModel { get; }
 
-		public ToolBarViewModel() {
-			MainViewModel = App.MainViewModel;
-			OnPropertyChanged(() => MainViewModel);
+		public ToolBarViewModel(MainViewModel vm) {
+			MainViewModel = vm;
 		}
 
 		public IEnumerable<ValueViewModel> NewValueTypes {

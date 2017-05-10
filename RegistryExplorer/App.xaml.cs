@@ -26,9 +26,10 @@ namespace RegistryExplorer {
 		protected override void OnStartup(StartupEventArgs e) {
 			MainViewModel = new MainViewModel(DialogCoordinator.Instance);
 
-			var win = new MainWindow();
-			win.DataContext = MainViewModel;
-			win.Show();
+            var win = new MainWindow() {
+                DataContext = MainViewModel
+            };
+            win.Show();
 		}
 
 		protected override void OnExit(ExitEventArgs e) {

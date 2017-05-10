@@ -4,11 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
-             xmlns:prism="http://prismlibrary.com/"
              xmlns:conv="clr-namespace:RegistryExplorer.Converters"
              xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" x:Name="This"
-             prism:ViewModelLocator.AutoWireViewModel="True"
+            
              d:DesignHeight="30" d:DesignWidth="600">
     <ToolBar HorizontalAlignment="Stretch" DataContext="{Binding MainViewModel}" >
         <ToolBar.Resources>
@@ -41,7 +40,7 @@
             </StackPanel>
         </Button>
         <Separator />
-        <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" >
+        <ToggleButton IsChecked="{Binding IsReadOnlyMode, Mode=TwoWay}" Style="{DynamicResource MetroFlatToggleButton}" >
             <StackPanel Orientation="Horizontal">
                 <Image Source="/images/book_blue.png" Width="16" Height="16" />
                 <TextBlock VerticalAlignment="Center" Margin="4,0,0,0" Text="Read Only" />

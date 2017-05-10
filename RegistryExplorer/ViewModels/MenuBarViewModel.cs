@@ -7,15 +7,16 @@ using Prism.Commands;
 using Prism.Mvvm;
 using MahApps.Metro;
 using System.Windows;
+using Zodiacon.WPF;
 
 namespace RegistryExplorer.ViewModels {
 	class MenuBarViewModel : BindableBase, IDisposable {
 		public MainViewModel MainViewModel { get; }
 		PropertyFollower<MainViewModel, MenuBarViewModel> _follower;
 
-		public MenuBarViewModel() {
-			MainViewModel = App.MainViewModel;
-			_follower = PropertyFollowerFactory.Create(MainViewModel, this, nameof(ViewModels.MainViewModel.IsReadOnlyMode));
+		public MenuBarViewModel(MainViewModel vm) {
+			MainViewModel = vm;
+			_follower = PropertyFollower<MainViewModel, MenuBarViewModel>.Create(MainViewModel, this, nameof(ViewModels.MainViewModel.IsReadOnlyMode));
 
 			ChangeAccentCommand = new DelegateCommand<AccentViewModel>(accent => {
 				ThemeManager.ChangeAppStyle(Application.Current, accent.Accent, ThemeManager.DetectAppStyle().Item1);

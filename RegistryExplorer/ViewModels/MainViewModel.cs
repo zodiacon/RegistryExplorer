@@ -10,7 +10,6 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Microsoft.Practices.Unity;
 using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -26,8 +25,10 @@ using RegistryExplorer.Serialization;
 
 namespace RegistryExplorer.ViewModels {
 	class MainViewModel : ViewModelBase, IDisposable {
-		public readonly IUnityContainer Container = new UnityContainer();
 		public CommandManager CommandManager { get; } = new CommandManager();
+        public MenuBarViewModel MenuBar { get; }
+        public ToolBarViewModel ToolBar { get; }
+
 		public Options Options { get; } = new Options();
 
 		public DelegateCommandBase LaunchWithAdminRightsCommand { get; }
@@ -58,7 +59,7 @@ namespace RegistryExplorer.ViewModels {
 			get { return _selectedItem; }
 			set {
 				if(SetProperty(ref _selectedItem, value)) {
-					OnPropertyChanged(nameof(CurrentPath));
+					RaisePropertyChanged(nameof(CurrentPath));
 				}
 			}
 		}
@@ -100,6 +101,9 @@ namespace RegistryExplorer.ViewModels {
 
 		public MainViewModel(IDialogCoordinator _dialogCoordinator) {
 			DialogCoordinator = _dialogCoordinator;
+
+            MenuBar = new MenuBarViewModel(this);
+            ToolBar = new ToolBarViewModel(this);
 
 			try {
 				NativeMethods.EnablePrivilege("SeBackupPrivilege");
@@ -205,7 +209,7 @@ namespace RegistryExplorer.ViewModels {
 					UndoCommand.RaiseCanExecuteChanged();
 					RedoCommand.RaiseCanExecuteChanged();
 				}
-			}, _ => IsEditMode).ObservesCanExecute(_ => IsEditMode);
+			}, _ => IsEditMode).ObservesCanExecute(() => IsEditMode);
 
 			BeginRenameCommand = new DelegateCommand(() => IsEditMode = true,
 				() => !IsReadOnlyMode && SelectedItem is RegistryKeyItem && !string.IsNullOrEmpty(((RegistryKeyItem)SelectedItem).Path))

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:RegistryExplorer.Views.Dialogs"
         xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:prism="http://prismlibrary.com/"
-        prism:ViewModelLocator.AutoWireViewModel="False"
+        
         mc:Ignorable="d"
         Title="Load Hive" SizeToContent="WidthAndHeight" TitleCaps="False" ResizeMode="NoResize"
                    WindowStartupLocation="CenterScreen"

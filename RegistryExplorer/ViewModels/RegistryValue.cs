@@ -34,8 +34,8 @@ namespace RegistryExplorer.ViewModels {
 			get { return _value; }
 			set {
 				if(SetProperty(ref _value, value)) {
-					OnPropertyChanged(() => ValueAsString);
-					OnPropertyChanged(() => MoreInfo);
+					RaisePropertyChanged(nameof(ValueAsString));
+					RaisePropertyChanged(nameof(MoreInfo));
 				}
 			}
 		}

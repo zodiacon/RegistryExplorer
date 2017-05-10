@@ -1,20 +1,12 @@
 ﻿<UserControl x:Class="RegistryExplorer.Views.MenuBarView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
 				 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 				 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ext="clr-namespace:RegistryExplorer.Extensions"
-				 xmlns:prism="http://prismlibrary.com/"
+				 xmlns:z="http://zodiacon.wpf/2016"
 				 xmlns:vm="clr-namespace:RegistryExplorer.ViewModels" mc:Ignorable="d" d:DesignHeight="30" d:DesignWidth="300"
-				 prism:ViewModelLocator.AutoWireViewModel="True" x:Name="This"
+				 x:Name="This"
 				 >
-	<Menu Background="WhiteSmoke" Padding="4" >
-		<Menu.ItemContainerStyle>
-			<Style TargetType="MenuItem">
-				<Setter Property="Background" Value="WhiteSmoke" />
-				<!--<Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />-->
-				<Style.Triggers>
-				</Style.Triggers>
-			</Style>
-		</Menu.ItemContainerStyle>
-		<MenuItem Header="_File" DataContext="{Binding MainViewModel}">
+    <Menu z:InputHelper.AttachInputBindings="True">
+		<MenuItem Header="_File" DataContext="{Binding MainViewModel}" >
 			<MenuItem Header="_Import..." Command="{Binding ImportCommand}" Icon="{ext:Image /images/import.png}" />
 			<MenuItem Header="_Export..." Command="{Binding ExportCommand}" Icon="{ext:Image /images/export.png}" />
 			<Separator />
@@ -43,7 +35,6 @@
 				<MenuItem Header="String Value" Command="{Binding EditNewValue}" CommandParameter="String" Icon="{ext:Image /images/datatypes/reg_string.png}" />
 				<MenuItem Header="Multi String Value" Command="{Binding EditNewValue}" CommandParameter="MultiString" Icon="{ext:Image /images/datatypes/reg_string.png}" />
 				<MenuItem Header="Binary Value" Command="{Binding EditNewValue}" CommandParameter="Binary" Icon="{ext:Image /images/datatypes/reg_binary.png}" />
-
 			</MenuItem>
 			<Separator />
 			<MenuItem Command="Cut" Icon="{ext:Image /images/cut.png}" />

@@ -65,10 +65,10 @@ namespace RegistryExplorer {
 		}
 
 		public void UpdateChanges() {
-			OnPropertyChanged(nameof(CanUndo));
-			OnPropertyChanged(nameof(CanRedo));
-			OnPropertyChanged(nameof(UndoDescription));
-			OnPropertyChanged(nameof(RedoDescription));
+			RaisePropertyChanged(nameof(CanUndo));
+			RaisePropertyChanged(nameof(CanRedo));
+			RaisePropertyChanged(nameof(UndoDescription));
+			RaisePropertyChanged(nameof(RedoDescription));
 
 		}
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using Prism.Commands;
 using Prism.Mvvm;
+using Zodiacon.WPF;
 
 namespace RegistryExplorer.ViewModels {
 	class DataGridViewModel : ViewModelBase, IDisposable {
@@ -20,7 +21,7 @@ namespace RegistryExplorer.ViewModels {
 			_follower = new PropertyFollower<MainViewModel, DataGridViewModel>(MainViewModel, this, nameof(IsReadOnlyMode));
 			_follower.Add(nameof(MainViewModel.SelectedItem), _ => {
 				FilterText = string.Empty;
-				OnPropertyChanged(nameof(Values));
+				RaisePropertyChanged(nameof(Values));
 			});
 
 			ClearFilterCommand = new DelegateCommand(() => FilterText = string.Empty);
@@ -40,7 +41,7 @@ namespace RegistryExplorer.ViewModels {
 		}
 
 		public void Refresh() {
-			OnPropertyChanged(nameof(Values));
+			RaisePropertyChanged(nameof(Values));
 		}
 
 		private string _filterText;

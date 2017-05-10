@@ -123,7 +123,7 @@ namespace RegistryExplorer.ViewModels {
 
 		public override void Refresh() {
 			_subItems = null;
-			OnPropertyChanged(nameof(SubItems));
+			RaisePropertyChanged(nameof(SubItems));
 		}
 
 		public void SetValueName(string oldname, string newname) {
